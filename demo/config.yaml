@@ -1,0 +1,6 @@
+indexfile: index.yaml
+title: My Website
+templatedir: .
+datadir: .
+filesdir: files
+layout: layout.html.st

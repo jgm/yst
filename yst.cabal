@@ -1,0 +1,53 @@
+name:                yst
+version:             0.0
+Cabal-version:       >= 1.2
+build-type:          Simple
+synopsis:            Builds a static website from templates and data in YAML or
+                     CSV files.
+description:         `yst` is a tool for generating a static website
+                     by filling string templates] with data taken from
+                     YAML text files (or, alternatively, CSV files).
+                     This approach combines the speed, security, and
+                     ease of deployment of a static website with the
+                     flexibility and maintainability of a dynamic site
+                     that separates presentation and data.
+
+category:            Text
+license:             GPL
+license-file:        LICENSE
+author:              John MacFarlane
+maintainer:          jgm@berkeley.edu
+homepage:            http://github.com/jgm/yst
+stability:           experimental
+data-files:          README
+                     demo/config.yaml
+                     demo/date.st
+                     demo/eventgroup.st
+                     demo/april_events.st
+                     demo/events.st
+                     demo/event.st
+                     demo/events.yaml
+                     demo/index.st
+                     demo/index.yaml
+                     demo/layout.html.st
+                     demo/layout.tex.st
+                     demo/room101.txt
+                     demo/room203.txt
+                     demo/files/css/base-min.css
+                     demo/files/css/hk-pyg.css
+                     demo/files/css/ie.css
+                     demo/files/css/print.css
+                     demo/files/css/reset-fonts-grids.css
+                     demo/files/css/reset-min.css
+                     demo/files/css/screen.css
+                     demo/files/js/nav.js
+Executable           yst
+  hs-source-dirs:    .
+  main-is:           yst.hs
+  other-modules:     Yst.Types, Yst.Yaml, Yst.Util, Yst.Data, Yst.Config,
+                     Yst.Render, Yst.Build, Yst.CSV
+  build-depends:     base >=3 && < 5, HStringTemplate >= 0.6.1, HsSyck, csv,
+                     filepath, containers, directory, utf8-string, time,
+                     old-locale, old-time, parsec, xhtml, pandoc
+  ghc-options:       -Wall -threaded -fno-warn-orphans
+  ghc-prof-options:  -auto-all -caf-all

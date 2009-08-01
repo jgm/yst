@@ -1,0 +1,9 @@
+# Room 203
+
+Room 203 is accessible only via rope ladders.
+
+Equipment:
+
+  - Manual typewriters
+  - Chalk
+

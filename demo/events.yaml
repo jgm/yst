@@ -1,0 +1,19 @@
+- date: 2009-06-28
+  speaker:  Sam Smith
+  title: Building a static website
+
+- date:  2009-04-15
+  speaker:
+    - Sam Smith
+    - '[Jim Jones](http://foo.bar/baz)'
+  title: Advantages of static websites
+
+- date:
+    - 2009-04-20
+    - 2009-04-22
+  title: Seminar on web security
+
+- date: 2009-04-15
+  speaker: Jim Jones
+  title:  XSS attacks for dummies
+

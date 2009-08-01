@@ -1,0 +1,51 @@
+@import url("reset-fonts-grids.css");
+@import url("base-min.css");
+@import url("hk-pyg.css");
+
+html { background: #f9f9f9; color: black; } 
+
+hr { height: 1px; color: #aaa; background-color: #aaa; border: 0; margin: .2em 0 .2em 0; }
+
+h1, h2, h3, h4, h5, h6 { font-weight: normal; border-bottom: 1px solid black; }
+
+h1 { font-size: 153.9%; margin: 1.07em 0 .535em; }
+h2 { font-size: 138.5%; margin: 1.14em 0 .57em; }
+h3 { font-size: 123.1%; margin: 1.23em 0 .615em; }
+h4 { font-size: 116%; margin: 1.33em 0 .67em; }
+h5 { font-size: 108%; margin: 1.6em 0 .8em; }
+h6 { font-size: 100%; margin: 1.6em 0 .8em; }
+
+ul { list-style-type: square; }
+dt { font-weight: bold; margin-bottom: .1em; }
+
+table { border-top: 1px solid #ccc;  border-left: 1px solid #ccc; }
+th, td { border-bottom: 1px solid #ddd; border-right: 1px solid #ccc; }
+
+blockquote { padding: 0 1.6em; color: #666; }
+
+/* COLORS */
+
+a:link { text-decoration: underline; color: #36c; }
+a:visited { text-decoration: underline; color: #99c; }
+a:hover { text-decoration: underline; color: #c33; }
+a:active,  a:focus { text-decoration: underline; color: #000; }
+/* code,  pre { color: #c33; } /* very optional, but still useful. W3C uses about the same colors for codes */
+
+h1 > a:link, h1 > a:active, h1 > a:hover, h1 > a:focus, h1 > a:visited,
+h2 > a:link, h2 > a:active, h2 > a:hover, h2 > a:focus, h2 > a:visited,
+h3 > a:link, h3 > a:active, h3 > a:hover, h3 > a:focus, h3 > a:visited,
+h4 > a:link, h4 > a:active, h4 > a:hover, h4 > a:focus, h4 > a:visited,
+h5 > a:link, h5 > a:active, h5 > a:hover, h5 > a:focus, h5 > a:visited,
+h6 > a:link, h6 > a:active, h6 > a:hover, h6 > a:focus, h6 > a:visited {
+        color: black;
+        text-decoration: none;
+}
+
+div#maincol { max-width: 46em; }
+
+#footer { padding: 1em; color: #888; text-align: center; font-size: 93%; }
+
+div#nav { margin-top: 2em; }
+div#nav ul { margin-top: 0; margin-left: 1em; margin-bottom: 0; }
+div#nav ul li { list-style: none; padding-bottom: 0.1em; }
+div#nav ul li.current { list-style: square; }
