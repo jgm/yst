@@ -44,6 +44,8 @@ createSite path = do
     let dest = path </> file 
     createDirectoryIfMissing True $ takeDirectory dest
     copyFile (demoDir </> file) dest
+  readme <- getDataFileName "README.markdown"
+  copyFile readme (path </> "README")
   hPutStrLn stderr $ "Created starter site in " ++ path
 
 usageMessage :: IO ()
