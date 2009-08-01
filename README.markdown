@@ -235,20 +235,20 @@ several times:
 `ORDER BY field [ASC|DESC] [THEN field [ASC|DESC]]*`
 
 >   Sorts a list by comparing the value of `field`.  `ASC`
-    (the default) means "ascending", and `DESC` means "descending".
-    The keyword `THEN` is used to separate fields that will be
-    compared in order.  So, if we are ordering by `birthday then lastname`,
-    we will compare birthdays, and if these are equal, we will break
-    the tie by comparing last names. 
+(the default) means "ascending", and `DESC` means "descending".
+The keyword `THEN` is used to separate fields that will be
+compared in order.  So, if we are ordering by `birthday then lastname`,
+we will compare birthdays, and if these are equal, we will break
+the tie by comparing last names. 
 
 `GROUP BY field [THEN field]*`
 
 >   Converts a list into a list of lists, where each sublist contains
-    only items with the same value for `field`.  So, for example,
-    `group by date` takes a list of events and produces a list of
-    lists of items, where each sublist contains events occuring at
-    a single date.  `GROUP BY date THEN venue` would produce a list
-    of lists of lists, and so on.
+only items with the same value for `field`.  So, for example,
+`group by date` takes a list of events and produces a list of
+lists of items, where each sublist contains events occuring at
+a single date.  `GROUP BY date THEN venue` would produce a list
+of lists of lists, and so on.
 
 `LIMIT n`
 
@@ -259,11 +259,11 @@ several times:
 >   Selects only items that meet a condition.
 
 >   A *condition* in a `WHERE` statement is a Boolean combination (using
-    `NOT`, `AND`, `OR`, and parentheses for disambiguation) of *basic
-    conditions*.  A *basic condition* is of the form `value op value`,
-    where `value` may be either a fieldname or a constant.  Note that
-    all constants must be enclosed in quotes.  `op` may be one of the
-    following:  `=`, `>=`, `<=`, `>`, `<`.
+`NOT`, `AND`, `OR`, and parentheses for disambiguation) of *basic
+conditions*.  A *basic condition* is of the form `value op value`,
+where `value` may be either a fieldname or a constant.  Note that
+all constants must be enclosed in quotes.  `op` may be one of the
+following:  `=`, `>=`, `<=`, `>`, `<`.
 
 Note that the order of transformations is significant.  You can get
 different results if you use `LIMIT` before or after `ORDER BY`,
@@ -281,11 +281,11 @@ PDFs, and the like.
 `yst` will recognize date fields in data files automatically, if the
 dates are in one of the following formats:
 
-    - the locale's standard date format
-    - MM/DD/YYYY (e.g. 04/28/1953)
-    - MM/DD/YY (e.g. 04/28/53)
-    - YYYY-MM-DD (e.g. 1953-04-28)
-    - DD MON YYYY (e.g. 28 Apr 1953)
+ - the locale's standard date format
+ - MM/DD/YYYY (e.g. 04/28/1953)
+ - MM/DD/YY (e.g. 04/28/53)
+ - YYYY-MM-DD (e.g. 1953-04-28)
+ - DD MON YYYY (e.g. 28 Apr 1953)
 
 Dates may be formatted in templates using a stringtemplate "format"
 directive. There's an example in the demo file `date.st`:
