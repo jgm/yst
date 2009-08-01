@@ -19,7 +19,7 @@ author:              John MacFarlane
 maintainer:          jgm@berkeley.edu
 homepage:            http://github.com/jgm/yst
 stability:           experimental
-data-files:          README
+data-files:          README.markdown
                      demo/config.yaml
                      demo/date.st
                      demo/eventgroup.st
