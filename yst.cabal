@@ -1,5 +1,5 @@
 name:                yst
-version:             0.0
+version:             0.1
 Cabal-version:       >= 1.2
 build-type:          Simple
 synopsis:            Builds a static website from templates and data in YAML or
