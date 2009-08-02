@@ -490,5 +490,5 @@ are rendered:
 [markdown]: http://daringfireball.com/markdown
 [pandoc]: http://johnmacfarlane.net/pandoc/
 [vim]: http://www.vim.org/
-
+[GHC]: http://www.haskell.org/ghc/
 
