@@ -26,15 +26,16 @@ import Yst.CSV
 import Control.Monad
 import Data.Char
 import Data.Maybe (fromMaybe)
-import Data.List (sortBy, nub)
+import Data.List (sortBy, nub, isPrefixOf)
 import Text.ParserCombinators.Parsec
 import System.FilePath (takeExtension)
 
-getData :: (FilePath, [DataOption]) -> IO Node
-getData (file, opts) = do
+getData :: DataSpec -> IO Node
+getData (DataFromFile file opts) = do
   raw <- catch (readDataFile file)
           (\e -> errorExit 15 ("Error reading data from " ++ file ++ ": " ++ show e) >> return undefined)
   return $ foldl applyDataOption raw opts
+getData (DataConstant n) = return n
 
 readDataFile :: FilePath -> IO Node
 readDataFile f =
@@ -97,14 +98,19 @@ reverseIfDescending Descending EQ = EQ
 reverseIfDescending Descending LT = GT
 reverseIfDescending Descending GT = LT
 
-parseDataField :: Node -> (FilePath, [DataOption])
-parseDataField (NString s) = case parse pDataField s s of
-  Right res   -> res
-  Left err    -> error $ show err
-parseDataField x = error $ "Expected string node, got " ++ show x
+parseDataField :: Node -> DataSpec
+parseDataField n@(NString s) = case parse pDataField s s of
+  Right (f,opts)  -> DataFromFile f opts
+  Left err        -> if "from" `isPrefixOf` (dropWhile isSpace $ map toLower s)
+                        then error $ "Error parsing data field: " ++ show err
+                        else DataConstant n 
+parseDataField n = DataConstant n
 
 pDataField :: GenParser Char st ([Char], [DataOption])
 pDataField = do
+  spaces
+  pString "from"
+  pSpace
   fname <- pIdentifier <?> "name of YAML or CSV file"
   opts <- many $ (pOptWhere <?> "where [CONDITION]")
               <|> (pOptLimit <?> "limit [NUMBER]")

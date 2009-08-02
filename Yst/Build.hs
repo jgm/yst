@@ -22,7 +22,7 @@ import Yst.Types
 import Yst.Util
 import Yst.Render
 import qualified Data.Map as M
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, mapMaybe)
 import Data.List
 import System.FilePath
 import System.Directory
@@ -44,7 +44,9 @@ dependencies site url =
                  case sourceFile page of
                        TemplateFile f -> stripStExt f <.> "st"
                        SourceFile f   -> f
-      dataFiles = map (\(_,(f,_)) -> dataDir site </> f) $ pageData page
+      fileFromSpec (DataFromFile f _) = Just f
+      fileFromSpec _ = Nothing
+      dataFiles = map (dataDir site </>) $ mapMaybe (\(_,s) -> fileFromSpec s) $ pageData page
   in  indexFile site : layout : srcdir : (requires ++ dataFiles)
 
 buildSite :: Site -> IO ()

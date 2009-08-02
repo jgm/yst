@@ -3,21 +3,21 @@
   template : index.st
   requires : event.st
   data     :
-    recentevents : events.yaml ORDER BY date DESC LIMIT 2
+    recentevents : FROM events.yaml ORDER BY date DESC LIMIT 2
 
 - url      : events.html
   title    : Events 
   template : events.st
   requires : [event.st, eventgroup.st, date.st]
   data     :
-    eventsbydate : events.yaml ORDER BY date DESC GROUP BY date
+    eventsbydate : FROM events.yaml ORDER BY date DESC GROUP BY date
 
 - url      : april_events.tex
   title    : April Events
   template : april_events.st
   requires : event.st
   data     :
-    april  : events.yaml WHERE date >= '2009-04-01' AND date < '2009-05-01' ORDER BY date
+    april  : FROM events.yaml WHERE date >= '2009-04-01' AND date < '2009-05-01' ORDER BY date
   layout   : layout.tex.st
   inmenu   : no 
 

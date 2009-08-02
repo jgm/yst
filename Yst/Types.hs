@@ -42,7 +42,7 @@ data Source = TemplateFile FilePath
             deriving (Show, Read, Eq)
 
 data Page = Page {
-    pageData      :: [(String, (FilePath, [DataOption]))]
+    pageData      :: [(String, DataSpec)]
   , layoutFile    :: Maybe FilePath
   , sourceFile    :: Source
   , requiresFiles :: [FilePath]
@@ -73,6 +73,10 @@ instance Ord Node where
   compare (NString _) _             = GT
   compare (NDate _) _               = GT
   compare _ _                       = GT
+
+data DataSpec = DataConstant Node
+              | DataFromFile FilePath [DataOption]
+              deriving (Show, Read, Eq)
 
 data DataOption = OrderBy [(String, SortDirection)]
                 | GroupBy [String]

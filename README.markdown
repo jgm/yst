@@ -51,7 +51,7 @@ what went into `index.html`. The file is a YAML list of YAML hashes
       template : index.st
       requires : event.st
       data     :
-        recentevents : events.yaml ORDER BY date DESC LIMIT 2
+        recentevents : FROM events.yaml ORDER BY date DESC LIMIT 2
 
 This says:  build the page `index.html` from the string template `index.st`
 (and subtemplate `event.st`) and data from `events.yaml`. Sort this data
@@ -220,8 +220,8 @@ although they may, and the query doesn't have to end with a semicolon,
 though it may):
 
     data:
-        events:  events.yaml order by date desc group by title then location
-        people:  people.csv order by birthday then lastname where
+        events:  from events.yaml order by date desc group by title then location
+        people:  from people.csv order by birthday then lastname where
                   birthstate = 'CA' limit 5
 
 First we have the name of the stringtemplate attribute to be populated
@@ -268,6 +268,14 @@ following:  `=`, `>=`, `<=`, `>`, `<`.
 Note that the order of transformations is significant.  You can get
 different results if you use `LIMIT` before or after `ORDER BY`,
 for example.
+
+If you want to specify an attribute's value directly, rather than
+reading it from a file, just omit the "FROM":
+
+    date:
+      deadline: 11/20/2009
+
+Any YAML value can be given to an attribute in this way.
 
 ### Static files
 
@@ -404,7 +412,7 @@ If you like, you can use a CSV file instead of YAML for your data source.
 Just give it the extension `.csv`.  In `index.yaml`, you'd have:
 
     data:
-      events:  events.csv order by date desc
+      events: from events.csv order by date desc
 
 This can be handy if you're using existing data, because spreadsheets
 and databases can easily be dumped to CSV. In the case of a SQL
@@ -440,17 +448,7 @@ date in a list of dates: not what you want.
 
 The solution is to set up your text editor so that it doesn't
 add the newline at the end of the file.  Using [vim][], you can do this
-with the commands `set binary` and `set noeol`.  To make this the
-default for `.st` files, add this line to `augroup filetypedetect`
-in `~\.vim\filetype.vim`:
-
-    au! BufRead,BufNewFile *.st setfiletype stringtemplate
-
-Then add a file `stringtemplate.st` in `~/.vim/ftplugin` with
-the following contents:
-
-    set binary
-    set noeol
+with the commands `set binary` and `set noeol`.
 
 ### Layout templates
 
