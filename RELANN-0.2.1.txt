@@ -1,0 +1,80 @@
+I'm pleased to announce the release of yst, now available on HackageDB.
+yst generates static websites from YAML data files and StringTemplates.
+This approach combines the speed, security, and ease of deployment of
+a static website with the flexibility and maintainability of a dynamic
+site that separates presentation and data.
+
+The easiest way to get a feel for yst is to try it:
+
+cabal update
+cabal install yst
+yst create testsite
+cd testsite
+yst
+
+yst attempts to fill a niche between two kinds of site creation tools.
+On the one hand you have simple static site generators like webgen,
+webby, nanoc, and my old custom system using make and pandoc. On the
+other hand, you have dynamic web frameworks like rails and django.
+For my own smallish websites, I found that the dynamic frameworks were
+overkill. Nobody but me was going to edit the pages, and I didn't
+want the trouble of writing and deploying a dynamic site, setting up
+a web server, and administering a database. A static site would be
+faster, easier to deploy, and more secure. But the dynamic frameworks
+offered one thing that the static site generators did not: an easy way
+to separate data from presentation. This was becoming increasingly
+important to me as I found myself constantly updating the same
+information (say, publication data for a paper) in multiple places (say,
+a LaTeX CV and a differently formatted web listing of papers).
+
+What I wanted was a site generation tool that used YAML text files
+as a database and allowed different kinds of documents to be produced
+from the same data.  I couldn't find anything that did just what I
+wanted, so I wrote yst. By way of illustration, here are the build
+instructions for HTML and LaTeX versions of a CV, plus a web page with a
+list of papers:
+
+- url: cv.html
+  title: CV
+  template: cv.st
+  data_common:  &cvdata
+    contact: from contact.yaml
+    jobsbyemployer: from jobs.yaml order by start group by employer
+    degrees: from degrees.yaml order by year desc
+    awards: from awards.yaml order by year desc group by title
+    papers: from papers.yaml order by year desc where (not (type = 'review'))
+    reviews: from papers.yaml order by year desc where type = 'review'
+    talks: from talks.yaml where date < '2009-09-01' order by date desc group by title
+    dissertations: from dissertations.yaml order by role then year group by role
+    theses: from theses.yaml order by year then student
+    courses: from courses.yaml order by number group by title
+  data:
+    <<:  *cvdata
+    html: yes
+
+- url: cv.tex
+  title: CV
+  inmenu: no
+  template: cv.st
+  layout: layout.tex.st
+  data:
+    <<:  *cvdata
+    html: yes
+
+- url: papers.html
+  title: Papers
+  template: papers.st
+  data:
+    papersbyyear:  from papers.yaml order by year desc then title group by year
+
+yst's query language is limited, and there are lots of things you can
+do with a full-fledged database that you can't do with yst. But yst
+is ideal, I think, for small to medium data-driven sites that are
+maintained by a single person who likes working with plain text. It
+scratched my itch, anyway, and I release it in case anyone else has the
+same itch.
+
+Code, documentation, and bug reports:  http://github.com/jgm/yst/tree/master
+
+John
+
