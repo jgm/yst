@@ -112,7 +112,7 @@ renderPage site page = do
   layoutTempl <- getTemplate layout g
   let format = formatFromExtension (stripStExt layout)
   let contents = converterForFormat format rawContents
-  let base' = case length (filter (=='/') $ pageUrl page) of
+  let root' = case length (filter (=='/') $ pageUrl page) of
                     0  -> ""
                     n  -> concat $ replicate n "../"
   return $ render
@@ -120,7 +120,7 @@ renderPage site page = do
          . setAttribute "pagetitle" (pageTitle page)
          . setAttribute "gendate" todaysDate 
          . setAttribute "contents" contents
-         . setAttribute "base" base'
+         . setAttribute "root" root'
          . setAttribute "nav" menuHtml
          $ layoutTempl
 

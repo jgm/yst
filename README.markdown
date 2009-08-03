@@ -480,10 +480,11 @@ are rendered:
 - `$gendate$`:   the date the page was generated
 - `$sitetitle$`:   the site title from `config.yaml`
 - `$pagetitle$`:   the page title as defined in `index.yaml`
-- `$base$`:  the path to the website's base directory, relative to the
-  page being rendered (put this in front of urls for css and javascript
-  in the layout file, so that these resources can be found even when
-  you're in a subdirectory of the site)
+- `$root$`: the path to the website's root, relative to the page being
+  rendered.  So, for example, if we are rendering `rooms/room503.html`,
+  `$root$` will have the value `../`. Put `$root$` in front of relative URLs
+  in your layout file, so that the links aren't broken on pages in
+  subdirectories.
 
 ### Previewing a site
 
