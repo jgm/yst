@@ -48,6 +48,7 @@ Executable           yst
                      Yst.Render, Yst.Build, Yst.CSV
   build-depends:     base >=3 && < 5, HStringTemplate >= 0.6.1, HsSyck, csv,
                      filepath, containers, directory, utf8-string, time,
-                     old-locale, old-time, parsec, xhtml, pandoc, bytestring
+                     old-locale, old-time, parsec, xhtml, pandoc, bytestring,
+                     split
   ghc-options:       -Wall -threaded -fno-warn-orphans
   ghc-prof-options:  -auto-all -caf-all

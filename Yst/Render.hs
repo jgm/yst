@@ -26,6 +26,7 @@ import Text.Pandoc
 import Text.XHtml hiding (option, (</>))
 import Data.Char
 import Data.List (intercalate)
+import Data.List.Split (wordsBy)
 import Text.StringTemplate
 import Data.Maybe (fromMaybe)
 import System.FilePath
@@ -34,14 +35,40 @@ import Prelude hiding (readFile, putStrLn, print, writeFile)
 import Data.Time
 import Control.Monad
 
+-- | @relUrl a b@ returns a URL for @b@ relative to @a@.  So, for
+-- example, @relUrl "a" "a/b.html" = "b.html"@,
+-- @relUrl "" "a/b.html" = "a/b.html"@, and @relUrl "a" "b.html" = "../b.html"@
+relUrl :: String -> String -> String
+relUrl relto url = intercalate "/" $ relPath ++ [urlBase]
+  where relPath = relPaths reltoPaths urlPaths
+        (reltoPaths, urlPaths) = dropCommon (wordsBy (=='/') relto) (wordsBy (=='/') urlDir)
+        urlBase = takeUrlBase url
+        urlDir = takeUrlDir url
+
+takeUrlBase :: String -> String
+takeUrlBase = reverse . takeWhile (/= '/') . reverse
+
+takeUrlDir :: String -> String
+takeUrlDir = reverse . dropWhile (== '/') . dropWhile (/= '/') . reverse
+
+relPaths :: [String] -> [String] -> [String]
+relPaths [] ys = ys
+relPaths (_:xs) ys  = ".." : relPaths xs ys
+
+dropCommon :: (Eq a) => [a] -> [a] -> ([a],[a])
+dropCommon (x:xs) (y:ys) | x == y = dropCommon xs ys
+dropCommon xs ys = (xs,ys)
+
 renderNav :: String -> [NavNode] -> String
 renderNav targeturl nodes = renderHtmlFragment $
   ulist ! [theclass "nav"] << map (renderNavNode targeturl) nodes
 
 renderNavNode :: String -> NavNode -> Html
 renderNavNode targeturl (NavPage tit pageurl) =
-  li ! attrs << hotlink pageurl << tit
-    where attrs = if pageurl == targeturl
+  li ! attrs << hotlink pageurl' << tit
+    where targetdir = takeUrlDir targeturl
+          pageurl' = relUrl targetdir pageurl
+          attrs = if pageurl == targeturl
                      then [theclass "current"]
                      else []
 renderNavNode targeturl (NavMenu tit nodes) =
