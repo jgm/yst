@@ -481,6 +481,27 @@ are rendered:
 - `$sitetitle$`:   the site title from `config.yaml`
 - `$pagetitle$`:   the page title as defined in `index.yaml`
 
+### Previewing a site
+
+If you use only relative URLs in your site, you can preview it by
+opening any of the HTML files in site in your web browser. If you use
+absolute links, this won't work, but you can use Jinjing Wang's simple
+static web server `maid`:
+
+    cabal update
+    cabal install maid
+
+To use maid to preview your site, just change to the site directory and
+start `maid`:
+
+    cd site
+    maid
+
+The site will appear at <http://localhost:3000>.  If you want to serve it
+at another port, just pass the port number as an argument to `maid`:
+
+    maid 5999
+
 
 [string template]: http://www.stringtemplate.org/
 [YAML]: http://www.yaml.org/
