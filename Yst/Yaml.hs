@@ -37,8 +37,15 @@ yamlNodeToNode n =
                         Nothing  -> NString (unpackBuf s)
                         Just d   -> NDate d
         EMap xs | all (\(k,_) -> isStrNode k) xs -> NMap pairs
-                     where pairs = map mkPair xs
-                           mkPair (k,v) = (strFrom k, yamlNodeToNode v)
+                     where pairs = foldr addPair [] xs
+                           addPair (k,v) acc = if isStrNode k && strFrom k == "<<"  -- hash merge, unsupported in Syck!
+                                                  then case n_elem v of             -- so we do it ourselves
+                                                            EMap ys -> foldr addPair acc ys
+                                                            _       -> error "Tried hash merge on non-hash"
+                                                  else case lookup kstr acc of
+                                                             Just _  -> acc   -- overridden
+                                                             Nothing -> (kstr, yamlNodeToNode v) : acc
+                                                          where kstr = strFrom k
         EMap _  -> error "Map keys must all be strings."
         ESeq xs -> NList $ map yamlNodeToNode xs
         ENil    -> NNil
