@@ -480,6 +480,10 @@ are rendered:
 - `$gendate$`:   the date the page was generated
 - `$sitetitle$`:   the site title from `config.yaml`
 - `$pagetitle$`:   the page title as defined in `index.yaml`
+- `$base$`:  the path to the website's base directory, relative to the
+  page being rendered (put this in front of urls for css and javascript
+  in the layout file, so that these resources can be found even when
+  you're in a subdirectory of the site)
 
 ### Previewing a site
 
