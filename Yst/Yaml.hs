@@ -20,14 +20,26 @@ module Yst.Yaml (readYamlFile, nodeToYamlNode)
 where
 import Yst.Types
 import Yst.Util
-import Data.Yaml.Syck
+import Data.Yaml.Syck hiding (unpackBuf, packBuf)
+import qualified Data.Yaml.Syck (unpackBuf, packBuf)
 import Data.Time
 import System.Locale (defaultTimeLocale)
-import Prelude hiding (readFile)
-import System.IO.UTF8
+import Codec.Binary.UTF8.String (encodeString, decodeString)
+import qualified Data.ByteString.Char8 as B (ByteString, readFile)
+
+-- Note: Syck isn't unicode aware, so we use parseYamlBytes and do our
+-- own encoding and decoding.
+
+type Buf = B.ByteString
+
+unpackBuf :: Buf -> String
+unpackBuf = decodeString . Data.Yaml.Syck.unpackBuf
+
+packBuf :: String -> Buf
+packBuf = Data.Yaml.Syck.packBuf . encodeString
 
 readYamlFile :: FilePath -> IO Node
-readYamlFile f = catch (readFile f >>= parseYaml >>= return . yamlNodeToNode)
+readYamlFile f = catch (B.readFile f >>= parseYamlBytes >>= return . yamlNodeToNode)
                    (\e -> errorExit 11 ("Error parsing " ++ f ++ ": " ++ show e) >> return NNil)
 
 yamlNodeToNode :: YamlNode -> Node
