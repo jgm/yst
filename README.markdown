@@ -507,6 +507,27 @@ at another port, just pass the port number as an argument to `maid`:
 
     maid 5999
 
+## Development
+
+### Source code
+
+yst's source code lives on github at <http://github.com/jgm/yst/tree/master>.
+You can clone the repository with
+
+   git://github.com/jgm/yst.git
+
+To install the development code once you've checked it out, just do
+
+    cabal install
+
+(But please stick to the released version if you don't like things to break
+unexpectedly!)
+
+### Reporting bugs
+
+If you find a bug, please report it using
+[the issue tracker on yst's github page](http://github.com/jgm/yst/issues).
+
 
 [string template]: http://www.stringtemplate.org/
 [YAML]: http://www.yaml.org/
