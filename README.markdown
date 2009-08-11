@@ -434,22 +434,6 @@ it parses text within HTML block elements as markdown.  So, for example,
 you can include a section in `<div>` tags, or use raw `<ul>` and `<li>`
 tags instead of markdown formatting.
 
-### Stringtemplate gotchas
-
-Sometimes you want to create a span-level template---something like
-`date.st`, which just formats a date:
-
-    $it; format="%B %d, %Y"$
-
-If you create a file containing this line with a regular text editor,
-the file will end with a newline character.  This will be treated
-as a newline in the template, so you'll get a new line after every
-date in a list of dates: not what you want.
-
-The solution is to set up your text editor so that it doesn't
-add the newline at the end of the file.  Using [vim][], you can do this
-with the commands `set binary` and `set noeol`.
-
 ### Layout templates
 
 Layout files are also string templates, but they are not treated as
