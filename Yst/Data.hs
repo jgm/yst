@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
