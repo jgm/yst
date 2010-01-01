@@ -52,5 +52,8 @@ Executable           yst
                      old-locale, old-time, parsec, xhtml, pandoc, bytestring,
                      split
   extensions:        CPP
-  ghc-options:       -Wall -threaded -fno-warn-orphans
+  if impl(ghc >= 6.12)
+    ghc-options:     -Wall -threaded -fno-warn-orphans -fno-warn-unused-do-bind
+  else
+    ghc-options:     -Wall -threaded -fno-warn-orphans
   ghc-prof-options:  -auto-all -caf-all
