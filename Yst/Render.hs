@@ -106,7 +106,7 @@ renderPage site page = do
   let layout = fromMaybe (defaultLayout site) $ layoutFile page
   srcDir <- canonicalizePath $ sourceDir site
   g <- directoryGroup srcDir
-  attrs <- forM (pageData page) $ \(k, v) -> getData v >>= \n -> return (k,n)
+  attrs <- forM (pageData page) $ \(k, v) -> getData site v >>= \n -> return (k,n)
   todaysDate <- liftM utctDay getCurrentTime
   rawContents <-
     case sourceFile page of

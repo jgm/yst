@@ -28,14 +28,14 @@ import Data.Char
 import Data.Maybe (fromMaybe)
 import Data.List (sortBy, nub, isPrefixOf)
 import Text.ParserCombinators.Parsec
-import System.FilePath (takeExtension)
+import System.FilePath (takeExtension, (</>))
 
-getData :: DataSpec -> IO Node
-getData (DataFromFile file opts) = do
-  raw <- catch (readDataFile file)
+getData :: Site -> DataSpec -> IO Node
+getData site (DataFromFile file opts) = do
+  raw <- catch (readDataFile $  dataDir site </> file)
           (\e -> errorExit 15 ("Error reading data from " ++ file ++ ": " ++ show e) >> return undefined)
   return $ foldl applyDataOption raw opts
-getData (DataConstant n) = return n
+getData _ (DataConstant n) = return n
 
 readDataFile :: FilePath -> IO Node
 readDataFile f =
