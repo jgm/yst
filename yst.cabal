@@ -1,5 +1,6 @@
 name:                yst
-version:             0.2.2
+version:             0.2.2.1
+Tested-With:         GHC == 6.10.4, GHC == 6.12.1
 Cabal-version:       >= 1.2
 build-type:          Simple
 synopsis:            Builds a static website from templates and data in YAML or
@@ -50,5 +51,6 @@ Executable           yst
                      filepath, containers, directory, utf8-string, time,
                      old-locale, old-time, parsec, xhtml, pandoc, bytestring,
                      split
+  extensions:        CPP
   ghc-options:       -Wall -threaded -fno-warn-orphans
   ghc-prof-options:  -auto-all -caf-all

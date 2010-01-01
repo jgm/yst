@@ -26,9 +26,15 @@ import System.FilePath
 import System.Environment
 import System.Directory
 import System.Exit
-import System.IO.UTF8
-import System.IO (stderr)
+-- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
+-- So we use System.IO.UTF8 only if we have an earlier version
+#if MIN_VERSION_base(4,2,0)
+import System.IO (hPutStrLn)
+#else
 import Prelude hiding (readFile, putStrLn, print, writeFile)
+import System.IO.UTF8
+#endif
+import System.IO (stderr)
 import Control.Monad
 
 createSite :: FilePath -> IO ()

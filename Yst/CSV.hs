@@ -21,8 +21,13 @@ where
 import Yst.Types
 import Yst.Util
 import Text.CSV
+-- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
+-- So we use System.IO.UTF8 only if we have an earlier version
+#if MIN_VERSION_base(4,2,0)
+#else
 import Prelude hiding (readFile)
 import System.IO.UTF8
+#endif
 
 readCSVFile :: FilePath -> IO Node
 readCSVFile f = catch (readFile f >>= return . csvToNode . parseCSV' f . stripBlanks)
