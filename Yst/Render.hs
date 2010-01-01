@@ -105,7 +105,7 @@ renderPage site page = do
   let menuHtml = renderNav (pageUrl page) (navigation site)
   let layout = fromMaybe (defaultLayout site) $ layoutFile page
   srcDir <- canonicalizePath $ sourceDir site
-  g <- directoryGroup srcDir
+  g <- directoryGroupRecursive srcDir
   attrs <- forM (pageData page) $ \(k, v) -> getData site v >>= \n -> return (k,n)
   todaysDate <- liftM utctDay getCurrentTime
   rawContents <-
