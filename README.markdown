@@ -169,11 +169,12 @@ The configuration file specifies the following:
 
 - `indexfile`: the filename of the index file (default: `index.yaml`)
 - `title`:  the title of the whole site
-- `templatedir`:  the directory containing templates (default: `.`)
+- `sourcedir`:  the directory containing all the templates and page sources
+  (default: `.`)
 - `datadir`:  the directory containing yaml data files (default: `.`)
 - `filesdir`: the directory containing static files (default: `files`)
-- `layout`: the default layout template for the site (default:
-  `layout.html.st`)
+- `layout`: the default layout template for the site, relative to
+  `sourcedir` (default: `layout.html.st`)
 
 ### `index.yaml` and submenus
 
@@ -193,7 +194,8 @@ fields:
    menu
 
 Each page must have at least `url`, `title`, and either `template` or
-`source`.
+`source`. Values for `template`, `source`, and `layout` are relative to
+`sourcedir` specified in `config.yaml`.
 
 The pages may be organized into a tree-like hierarchy, which will be
 reflected in the site navigation menu.  It is easiest to see how this
