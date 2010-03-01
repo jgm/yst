@@ -110,7 +110,7 @@ renderPage site page = do
   todaysDate <- liftM utctDay getCurrentTime
   rawContents <-
     case sourceFile page of
-          SourceFile sf   -> readFile (srcDir </> sf)
+          SourceFile sf   -> liftM (filter (/='\r')) $ readFile (srcDir </> sf)
           TemplateFile tf -> do
             templ <- getTemplate tf g
             return $ render (setManyAttrib attrs templ)

@@ -25,7 +25,7 @@ import qualified Data.Yaml.Syck (unpackBuf, packBuf)
 import Data.Time
 import System.Locale (defaultTimeLocale)
 import Codec.Binary.UTF8.String (encodeString, decodeString)
-import qualified Data.ByteString.Char8 as B (ByteString, readFile)
+import qualified Data.ByteString.Char8 as B (ByteString, readFile, filter)
 
 -- Note: Syck isn't unicode aware, so we use parseYamlBytes and do our
 -- own encoding and decoding.
@@ -39,7 +39,7 @@ packBuf :: String -> Buf
 packBuf = Data.Yaml.Syck.packBuf . encodeString
 
 readYamlFile :: FilePath -> IO Node
-readYamlFile f = catch (B.readFile f >>= parseYamlBytes >>= return . yamlNodeToNode)
+readYamlFile f = catch (B.readFile f >>= parseYamlBytes . B.filter (/='\r') >>= return . yamlNodeToNode)
                    (\e -> errorExit 11 ("Error parsing " ++ f ++ ": " ++ show e) >> return NNil)
 
 yamlNodeToNode :: YamlNode -> Node

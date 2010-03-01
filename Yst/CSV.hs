@@ -30,7 +30,7 @@ import System.IO.UTF8
 #endif
 
 readCSVFile :: FilePath -> IO Node
-readCSVFile f = catch (readFile f >>= return . csvToNode . parseCSV' f . stripBlanks)
+readCSVFile f = catch (readFile f >>= return . csvToNode . parseCSV' f . stripBlanks . filter (/='\r'))
                    (\e -> errorExit 11 ("Error parsing " ++ f ++ ": " ++ show e) >> return NNil)
 
 parseCSV' :: FilePath -> String -> CSV
