@@ -123,7 +123,7 @@ pDataField = do
   return (fname, opts)
 
 pIdentifier :: GenParser Char st [Char]
-pIdentifier = spaces >> (pQuoted '\'' <|> pQuoted '"' <|> many (noneOf " \t\n;,'\""))
+pIdentifier = spaces >> (pQuoted '\'' <|> pQuoted '"' <|> many (noneOf " \t\n<>=;,'\""))
 
 -- | Case-insensitive string parser.
 pString :: String -> GenParser Char st String
