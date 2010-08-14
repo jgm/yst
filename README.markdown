@@ -181,6 +181,8 @@ The configuration file specifies the following:
 - `filesdir`: the directory containing static files (default: `files`)
 - `layout`: the default layout template for the site, relative to
   `sourcedir` (default: `layout.html.st`)
+- `deploydir`: the directory where the generated site is deplayed 
+  (default `site`) 
 
 ### `index.yaml` and submenus
 
