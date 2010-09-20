@@ -75,6 +75,7 @@ instance Ord Node where
 
 data DataSpec = DataConstant Node
               | DataFromFile FilePath [DataOption]
+              | DataFromSqlite3 FilePath String [DataOption]
               deriving (Show, Read, Eq)
 
 data DataOption = OrderBy [(String, SortDirection)]
