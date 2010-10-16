@@ -280,7 +280,7 @@ for example.
 If you want to specify an attribute's value directly, rather than
 reading it from a file, just omit the "FROM":
 
-    date:
+    data:
       deadline: 11/20/2009
 
 Any YAML value can be given to an attribute in this way.
