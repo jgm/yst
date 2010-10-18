@@ -121,6 +121,7 @@ renderPage site page = do
                     0  -> ""
                     n  -> concat $ replicate n "../"
   return $ render
+         . setManyAttrib attrs
          . setAttribute "sitetitle" (siteTitle site)
          . setAttribute "pagetitle" (pageTitle page)
          . setAttribute "gendate" todaysDate 
