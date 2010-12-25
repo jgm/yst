@@ -99,6 +99,7 @@ data FilterTest = TestEq
                 | TestLt
                 | TestGtEq
                 | TestLtEq
+                | TestContains
                 deriving (Show, Read, Eq)
 
 data SortDirection = Ascending | Descending deriving (Show, Read, Eq)
