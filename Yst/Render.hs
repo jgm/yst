@@ -22,7 +22,7 @@ import Yst.Types
 import Yst.Util
 import Yst.Data
 import System.Directory
-import Text.Pandoc
+import Text.Pandoc hiding (Format)
 import Text.XHtml hiding (option, (</>))
 import Data.Char
 import Data.List (intercalate)
