@@ -73,6 +73,9 @@ filterTestPred TestGt    = (>)
 filterTestPred TestLt    = (<)
 filterTestPred TestGtEq  = (>=)
 filterTestPred TestLtEq  = (<=)
+filterTestPred TestContains = \n1 n2 -> case n1 of
+                                          NList ns -> elem n2 ns
+                                          _        -> False
 
 filterArgToNode :: FilterArg -> Node -> Node
 filterArgToNode (AttrValue attr) (NMap ns) = fromMaybe NNil (lookup attr ns)
@@ -253,6 +256,7 @@ pFilterTest = do
          , ("<=",TestLtEq)
          , (">",TestGt)
          , ("<",TestLt)
+         , ("contains",TestContains)
          ]
 
 pSpace :: GenParser Char st ()

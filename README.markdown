@@ -273,7 +273,11 @@ of lists of lists, and so on.
 conditions*.  A *basic condition* is of the form `value op value`,
 where `value` may be either a fieldname or a constant.  Note that
 all constants must be enclosed in quotes.  `op` may be one of the
-following:  `=`, `>=`, `<=`, `>`, `<`.
+following:  `=`, `>=`, `<=`, `>`, `<` and 'contains'.
+
+> The basic condition `arg1 contains arg2` succeeds if and only if
+`arg1` is a fieldname whose value is a list containing the value of
+`arg2`.
 
 Note that the order of transformations is significant.  You can get
 different results if you use `LIMIT` before or after `ORDER BY`,
@@ -282,7 +286,7 @@ for example.
 If you want to specify an attribute's value directly, rather than
 reading it from a file, just omit the "FROM":
 
-    date:
+    data:
       deadline: 11/20/2009
 
 Any YAML value can be given to an attribute in this way.
