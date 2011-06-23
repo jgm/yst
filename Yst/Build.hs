@@ -51,6 +51,7 @@ dependencies site url =
                        TemplateFile f -> stripStExt f <.> "st"
                        SourceFile f   -> f
       fileFromSpec (DataFromFile f _) = Just f
+      fileFromSpec (DataFromSqlite3 f _ _) = Just f
       fileFromSpec _ = Nothing
       dataFiles = map (dataDir site </>) $ mapMaybe (\(_,s) -> fileFromSpec s) $ pageData page
   in  indexFile site : layout : srcdir : (requires ++ dataFiles)
