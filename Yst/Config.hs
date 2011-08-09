@@ -33,9 +33,9 @@ parseConfigFile configfile = do
          let indexfile = getStrAttrWithDefault "indexfile" "index.yaml" xs
          (ind, nav) <- parseIndexFile indexfile
          return Site{ siteTitle     = getStrAttrWithDefault "title" "" xs
-                    , sourceDir     = getStrAttrWithDefault "sourcedir" "." xs
-                    , dataDir       = getStrAttrWithDefault "datadir" "." xs
-                    , filesDir      = getStrAttrWithDefault "filesdir" "files" xs
+                    , sourceDir     = getStrListWithDefault "sourcedir" "." xs
+                    , dataDir       = getStrListWithDefault "datadir" "." xs
+                    , filesDir      = getStrListWithDefault "filesdir" "files" xs
                     , deployDir     = getStrAttrWithDefault "deploydir" "site" xs
                     , defaultLayout = getStrAttrWithDefault "layout" "layout" xs
                     , indexFile     = indexfile

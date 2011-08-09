@@ -104,13 +104,14 @@ renderPage :: Site -> Page -> IO String
 renderPage site page = do
   let menuHtml = renderNav (pageUrl page) (navigation site)
   let layout = fromMaybe (defaultLayout site) $ layoutFile page
-  srcDir <- canonicalizePath $ sourceDir site
-  g <- directoryGroupRecursive srcDir
+  srcDirs <- mapM canonicalizePath $ sourceDir site
+  gs <- mapM directoryGroupRecursive srcDirs
+  let g = foldl1 mergeSTGroups gs
   attrs <- forM (pageData page) $ \(k, v) -> getData site v >>= \n -> return (k,n)
   todaysDate <- liftM utctDay getCurrentTime
   rawContents <-
     case sourceFile page of
-          SourceFile sf   -> liftM (filter (/='\r')) $ readFile (srcDir </> sf)
+          SourceFile sf   -> liftM (filter (/='\r')) $ searchPath srcDirs sf >>= readFile
           TemplateFile tf -> do
             templ <- getTemplate tf g
             return $ render (setManyAttrib attrs templ)
