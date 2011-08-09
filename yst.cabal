@@ -23,11 +23,11 @@ homepage:            http://github.com/jgm/yst
 stability:           experimental
 data-files:          README.markdown
                      demo/config.yaml
-                     demo/date.st
-                     demo/eventgroup.st
+                     demo/templates/date.st
+                     demo/templates/eventgroup.st
                      demo/april_events.st
                      demo/events.st
-                     demo/event.st
+                     demo/templates/event.st
                      demo/events.yaml
                      demo/index.st
                      demo/index.yaml
@@ -35,12 +35,12 @@ data-files:          README.markdown
                      demo/layout.tex.st
                      demo/room101.txt
                      demo/room203.txt
-                     demo/files/css/base-min.css
+                     demo/yahoo/css/base-min.css
                      demo/files/css/hk-pyg.css
                      demo/files/css/ie.css
                      demo/files/css/print.css
-                     demo/files/css/reset-fonts-grids.css
-                     demo/files/css/reset-min.css
+                     demo/yahoo/css/reset-fonts-grids.css
+                     demo/yahoo/css/reset-min.css
                      demo/files/css/screen.css
                      demo/files/js/nav.js
 Executable           yst
