@@ -1,6 +1,6 @@
 indexfile: index.yaml
 title: My Website
-sourcedir: .
+sourcedir: [., templates]
 datadir: .
-filesdir: files
+filesdir: [files, yahoo]
 layout: layout.html.st
