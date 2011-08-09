@@ -1,0 +1,7 @@
+yst 0.3 (released 9 Aug 2011)
+
+  * Added support for loading data from Sqlite3 databases.
+    (Sigurd Meldgaard)
+
+  * Allow `sourcedir`, `datadir`, `filesdir` to specify a list
+    of directories, searched in order. (Christopher League)
