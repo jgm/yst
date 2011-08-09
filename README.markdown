@@ -176,12 +176,18 @@ The configuration file specifies the following:
 
 - `indexfile`: the filename of the index file (default: `index.yaml`)
 - `title`:  the title of the whole site
-- `sourcedir`:  the directory containing all the templates and page sources
+- `sourcedir`:  list of directories containing templates and page sources
   (default: `.`)
-- `datadir`:  the directory containing yaml data files (default: `.`)
-- `filesdir`: the directory containing static files (default: `files`)
+- `datadir`:  list of directories containing yaml data files (default: `.`)
+- `filesdir`: list of directories containing static files (default: `files`)
 - `layout`: the default layout template for the site, relative to
   `sourcedir` (default: `layout.html.st`)
+
+The directories specified by `sourcedir` and `datadir` are searched in
+order to find source/template or data files, respectively.  This allows
+for a `../templates` directory to be shared among multiple sites, for
+example.  Static files are merged from the contents of all directories
+in `filesdir`. All of these accept a string as a singleton list.
 
 ### `index.yaml` and submenus
 

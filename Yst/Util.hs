@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -}
 
-module Yst.Util (stripBlanks, parseAsDate, stripStExt, getStrAttrWithDefault, fromNString, getDirectoryContentsRecursive, errorExit)
+module Yst.Util (stripBlanks, parseAsDate, stripStExt, getStrAttrWithDefault, getStrListWithDefault, fromNString, getDirectoryContentsRecursive, searchPath, errorExit)
 where
 import Yst.Types
 import System.Exit
@@ -59,6 +59,17 @@ getStrAttrWithDefault attr def xs =
         Just _             -> error $ attr ++ " must have string value."
         Nothing            -> def
 
+getStrListWithDefault :: String -> String -> [(String, Node)] -> [String]
+getStrListWithDefault attr def xs =
+  case lookup attr xs of
+    Just (NString s) -> [s]
+    Just (NList ys) -> map nodeToString ys
+    Just _ -> formatError
+    Nothing -> [def]
+  where nodeToString (NString s) = s
+        nodeToString _ = formatError
+        formatError = error $ attr ++ " must be a string or list of strings."
+
 fromNString :: Node -> String
 fromNString (NString s) = s
 fromNString x = error $ "Expected string value, got " ++ show x
@@ -73,6 +84,13 @@ getDirectoryContentsRecursive path = do
        children <- mapM getDirectoryContentsRecursive contents'
        return (concat children)
      else return [path]
+
+searchPath :: [FilePath] -> FilePath -> IO FilePath
+searchPath [] file = return file       -- may or may not exist, but we tried.
+searchPath (dir:dirs) file = do
+  exists <- doesFileExist curFile
+  if exists then return curFile else searchPath dirs file
+    where curFile = dir </> file
 
 errorExit :: Int -> String -> IO ()
 errorExit lvl msg = hPutStrLn stderr msg >> exitWith (ExitFailure lvl)
