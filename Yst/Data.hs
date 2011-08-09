@@ -29,15 +29,18 @@ import Data.Char
 import Data.Maybe (fromMaybe)
 import Data.List (sortBy, nub, isPrefixOf)
 import Text.ParserCombinators.Parsec
-import System.FilePath (takeExtension, (</>))
+import System.FilePath (takeExtension)
+
+findData :: Site -> FilePath -> IO FilePath
+findData = searchPath . dataDir
 
 getData :: Site -> DataSpec -> IO Node
 getData site (DataFromFile file opts) = do
-  raw <- catch (readDataFile $  dataDir site </> file)
+  raw <- catch (findData site file >>= readDataFile)
           (\e -> errorExit 15 ("Error reading data from " ++ file ++ ": " ++ show e) >> return undefined)
   return $ foldl applyDataOption raw opts
 getData site (DataFromSqlite3 database query opts) = do
-  raw <- catch (readSqlite3 (dataDir site </> database) query)
+  raw <- catch (findData site database >>= \d -> readSqlite3 d query)
           (\e -> errorExit 15 ("Error reading Sqlite3 database from " ++ database ++ ": " ++ show e) >> return undefined)
   return $ foldl applyDataOption raw opts
 getData _ (DataConstant n) = return n
