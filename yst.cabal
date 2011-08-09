@@ -22,6 +22,7 @@ maintainer:          jgm@berkeley.edu
 homepage:            http://github.com/jgm/yst
 stability:           experimental
 data-files:          README.markdown
+                     changelog
                      demo/config.yaml
                      demo/templates/date.st
                      demo/templates/eventgroup.st
