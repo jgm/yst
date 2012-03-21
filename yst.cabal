@@ -44,6 +44,7 @@ data-files:          README.markdown
                      demo/yahoo/css/reset-min.css
                      demo/files/css/screen.css
                      demo/files/js/nav.js
+                     demo/includeCode.hs
 
 Source-repository    head
   type:              git
