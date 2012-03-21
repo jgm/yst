@@ -30,6 +30,10 @@ import Data.List.Split (wordsBy)
 import Text.StringTemplate
 import Data.Maybe (fromMaybe)
 import System.FilePath
+import System.Process (createProcess, shell, StdStream(..), CreateProcess(..))
+import Text.JSON.Generic (encodeJSON, decodeJSON)
+import Control.Concurrent (forkIO)
+import System.IO.UTF8 (hPutStr, hGetContents)
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
 -- So we use System.IO.UTF8 only if we have an earlier version
 #if MIN_VERSION_base(4,2,0)
@@ -117,7 +121,9 @@ renderPage site page = do
             return $ render (setManyAttrib attrs templ)
   layoutTempl <- getTemplate layout g
   let format = formatFromExtension (stripStExt layout)
-  let contents = converterForFormat format rawContents
+  let doc = readMarkdown defaultParserState{stateSmart = True} rawContents
+  doc' <- maybeFilterDoc (filterCommand site) doc
+  let contents = converterForFormat format defaultWriterOptions doc'
   let root' = case length (filter (=='/') $ pageUrl page) of
                     0  -> ""
                     n  -> concat $ replicate n "../"
@@ -131,19 +137,25 @@ renderPage site page = do
          . setAttribute "nav" menuHtml
          $ layoutTempl
 
-converterForFormat :: Format -> String -> String
-converterForFormat f =
-  let reader = readMarkdown defaultParserState{stateSmart = True}
-  in  case f of
-       HtmlFormat          -> writeHtmlString defaultWriterOptions . reader
-       LaTeXFormat         -> writeLaTeX defaultWriterOptions . reader
-       PlainFormat         -> id
-       ConTeXtFormat       -> writeConTeXt defaultWriterOptions . reader
-       ManFormat           -> writeMan defaultWriterOptions . reader
-       RTFFormat           -> writeRTF defaultWriterOptions . reader
-       DocBookFormat       -> writeDocbook defaultWriterOptions . reader
-       TexinfoFormat       -> writeTexinfo defaultWriterOptions . reader
-       OpenDocumentFormat  -> writeOpenDocument defaultWriterOptions . reader
+maybeFilterDoc :: Maybe String -> Pandoc -> IO Pandoc
+maybeFilterDoc Nothing doc = return doc
+maybeFilterDoc (Just cmd) doc = do
+  (Just inp, Just out, _, _) <- createProcess (shell cmd)
+        {std_in = CreatePipe, std_out = CreatePipe}
+  forkIO $ hPutStr inp $ encodeJSON doc
+  hGetContents out >>= return . decodeJSON
+
+converterForFormat :: Format -> WriterOptions -> Pandoc -> String
+converterForFormat f = case f of
+    HtmlFormat -> writeHtmlString
+    LaTeXFormat -> writeLaTeX
+    PlainFormat -> writeMarkdown
+    ConTeXtFormat -> writeConTeXt
+    ManFormat -> writeMan
+    RTFFormat -> writeRTF
+    DocBookFormat -> writeDocbook
+    TexinfoFormat -> writeTexinfo
+    OpenDocumentFormat -> writeOpenDocument
 
 getTemplate :: Stringable a => String -> STGroup a -> IO (StringTemplate a)
 getTemplate templateName templateGroup = do
