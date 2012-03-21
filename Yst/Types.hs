@@ -34,6 +34,7 @@ data Site = Site {
   , indexFile     :: FilePath
   , pageIndex     :: M.Map String Page
   , navigation    :: [NavNode]
+  , filterCommand :: Maybe String
   } deriving (Show, Read, Eq)
 
 data Source = TemplateFile FilePath
