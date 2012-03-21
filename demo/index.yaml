@@ -1,7 +1,7 @@
 - url      : index.html
   title    : Home
   template : index.st
-  requires : event.st
+  requires : [event.st, includeCode.hs]
   data     :
     recentevents : FROM events.yaml ORDER BY date DESC LIMIT 2
 
