@@ -104,6 +104,7 @@ formatFromExtension f = case (map toLower $ takeExtension f) of
                              ".txt"   -> PlainFormat
                              ".markdown" -> PlainFormat
                              _       -> HtmlFormat
+
 renderPage :: Site -> Page -> IO String
 renderPage site page = do
   let menuHtml = renderNav (pageUrl page) (navigation site)
@@ -113,20 +114,24 @@ renderPage site page = do
   let g = foldl1 mergeSTGroups gs
   attrs <- forM (pageData page) $ \(k, v) -> getData site v >>= \n -> return (k,n)
   todaysDate <- liftM utctDay getCurrentTime
+  let root' = case length (filter (=='/') $ pageUrl page) of
+                    0  -> ""
+                    n  -> concat $ replicate n "../"
   rawContents <-
     case sourceFile page of
           SourceFile sf   -> liftM (filter (/='\r')) $ searchPath srcDirs sf >>= readFile
           TemplateFile tf -> do
             templ <- getTemplate tf g
-            return $ render (setManyAttrib attrs templ)
+            return $ render
+                    . setManyAttrib attrs
+                    . setAttribute "root" root'
+                    . setAttribute "gendate" todaysDate
+                    $ templ
   layoutTempl <- getTemplate layout g
   let format = formatFromExtension (stripStExt layout)
   let doc = readMarkdown defaultParserState{stateSmart = True} rawContents
   doc' <- maybeFilterDoc (filterCommand site) doc
   let contents = converterForFormat format defaultWriterOptions doc'
-  let root' = case length (filter (=='/') $ pageUrl page) of
-                    0  -> ""
-                    n  -> concat $ replicate n "../"
   return $ render
          . setManyAttrib attrs
          . setAttribute "sitetitle" (siteTitle site)
