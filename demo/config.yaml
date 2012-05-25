@@ -4,3 +4,4 @@ sourcedir: [., templates]
 datadir: .
 filesdir: [files, yahoo]
 layout: layout.html.st
+filter: runhaskell includeCode.hs

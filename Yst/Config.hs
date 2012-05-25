@@ -41,6 +41,7 @@ parseConfigFile configfile = do
                     , indexFile     = indexfile
                     , pageIndex     = M.fromList $ map (\pg -> (pageUrl pg, pg)) ind
                     , navigation    = nav
+                    , filterCommand = getStrAttrMaybe "filter" xs
                     }
        _       -> errorExit 7 "Configuration file must be a YAML hash." >> return undefined
 

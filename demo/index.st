@@ -14,3 +14,10 @@ yst supports unicode:
 - أنا قادر على أكل الزجاج و هذا لا يؤلمني.
 - 我能吞下玻璃而不伤身体。
 
+
+yst code inclusion:
+
+~~~~ {.haskell include="includeCode.hs"}
+-- This should be a code block
+main = putStrLn "Hello!"
+~~~~

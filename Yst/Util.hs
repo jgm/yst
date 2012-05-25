@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -}
 
-module Yst.Util (stripBlanks, parseAsDate, stripStExt, getStrAttrWithDefault, getStrListWithDefault, fromNString, getDirectoryContentsRecursive, searchPath, errorExit)
+module Yst.Util (stripBlanks, parseAsDate, stripStExt, getStrAttrMaybe, getStrAttrWithDefault, getStrListWithDefault, fromNString, getDirectoryContentsRecursive, searchPath, errorExit)
 where
 import Yst.Types
 import System.Exit
@@ -52,12 +52,16 @@ stripStExt f =
      then dropExtension f
      else f
 
+getStrAttrMaybe :: String -> [(String, Node)] -> Maybe String
+getStrAttrMaybe attr xs =
+  case lookup attr xs of
+    Just (NString s) -> Just s
+    Just _ -> error $ attr ++ " must have string value."
+    Nothing -> Nothing
+
 getStrAttrWithDefault :: String -> String -> [(String, Node)] -> String
 getStrAttrWithDefault attr def xs =
-  case lookup attr xs of
-        Just (NString s)   -> s
-        Just _             -> error $ attr ++ " must have string value."
-        Nothing            -> def
+  maybe def id $ getStrAttrMaybe attr xs
 
 getStrListWithDefault :: String -> String -> [(String, Node)] -> [String]
 getStrListWithDefault attr def xs =
