@@ -1,4 +1,4 @@
-yst 0.3 (released ?? Aug 2011)
+yst 0.3 (released 20 Oct 2012)
 
   * Added support for loading data from Sqlite3 databases.
     (Sigurd Meldgaard)
