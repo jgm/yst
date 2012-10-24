@@ -106,6 +106,7 @@ data FilterTest = TestEq
 data SortDirection = Ascending | Descending deriving (Show, Read, Eq)
 
 data Format = HtmlFormat
+            | Html5Format
             | LaTeXFormat
             | ConTeXtFormat
             | PlainFormat

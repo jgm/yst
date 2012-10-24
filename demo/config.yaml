@@ -3,4 +3,4 @@ title: My Website
 sourcedir: [., templates]
 datadir: .
 filesdir: [files, yahoo]
-layout: layout.html.st
+layout: layout.html5.st

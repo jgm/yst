@@ -88,6 +88,7 @@ renderNavNode targeturl (NavMenu tit nodes) =
 formatFromExtension :: FilePath -> Format
 formatFromExtension f = case (map toLower $ takeExtension f) of
                              ".html"  -> HtmlFormat
+                             ".html5" -> Html5Format
                              ".xhtml" -> HtmlFormat
                              ".latex" -> LaTeXFormat
                              ".tex"   -> LaTeXFormat
@@ -141,6 +142,8 @@ converterForFormat f =
   let reader = readMarkdown defaultParserState{stateSmart = True}
   in  case f of
        HtmlFormat          -> writeHtmlString defaultWriterOptions{
+                                  writerHtml5 = False } . reader
+       Html5Format         -> writeHtmlString defaultWriterOptions{
                                   writerHtml5 = True } . reader
        LaTeXFormat         -> writeLaTeX defaultWriterOptions . reader
        PlainFormat         -> id

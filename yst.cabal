@@ -32,7 +32,7 @@ data-files:          README.markdown
                      demo/events.yaml
                      demo/index.st
                      demo/index.yaml
-                     demo/layout.html.st
+                     demo/layout.html5.st
                      demo/layout.tex.st
                      demo/room101.txt
                      demo/room203.txt
