@@ -36,14 +36,20 @@ data-files:          README.markdown
                      demo/layout.tex.st
                      demo/room101.txt
                      demo/room203.txt
-                     demo/yahoo/css/base-min.css
+                     demo/files/bootstrap/css/bootstrap-responsive.css
+                     demo/files/bootstrap/css/bootstrap.css
+                     demo/files/bootstrap/css/bootstrap-responsive.min.css
+                     demo/files/bootstrap/css/bootstrap.min.css
+                     demo/files/bootstrap/img/glyphicons-halflings-white.png
+                     demo/files/bootstrap/img/glyphicons-halflings.png
+                     demo/files/bootstrap/js/bootstrap.js
+                     demo/files/bootstrap/js/bootstrap.min.js
                      demo/files/css/hk-pyg.css
-                     demo/files/css/ie.css
                      demo/files/css/print.css
-                     demo/yahoo/css/reset-fonts-grids.css
-                     demo/yahoo/css/reset-min.css
                      demo/files/css/screen.css
                      demo/files/js/nav.js
+                     demo/files/js/jquery-1.8.2.min.js
+                     demo/files/js/modernizr-2.6.2.min.js
 
 Source-repository    head
   type:              git
