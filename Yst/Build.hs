@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -32,12 +33,14 @@ import System.Time (ClockTime(..))
 -- So we use System.IO.UTF8 only if we have an earlier version
 #if MIN_VERSION_base(4,2,0)
 import System.IO (hPutStrLn)
+import Prelude hiding (catch)
 #else
-import Prelude hiding (readFile, putStrLn, print, writeFile)
+import Prelude hiding (readFile, putStrLn, print, writeFile, catch)
 import System.IO.UTF8
 #endif
 import System.IO (stderr)
 import Control.Monad
+import Control.Exception (catch, SomeException)
 
 findSource :: Site -> FilePath -> IO FilePath
 findSource = searchPath . sourceDir
@@ -79,7 +82,8 @@ updateFile site file = do
   let destpath = deployDir site </> file
   srcpath <- searchPath (filesDir site) file
   srcmod <- getModificationTime srcpath
-  destmod <- catch (getModificationTime destpath) (\_ -> return $ TOD 0 0)
+  destmod <- catch (getModificationTime destpath)
+                   (\(_::SomeException) -> return $ TOD 0 0)
   if srcmod > destmod
      then do
        createDirectoryIfMissing True $ takeDirectory destpath
@@ -98,7 +102,8 @@ updatePage site page = do
       hPutStrLn stderr $ "Aborting!  Cannot build " ++ destpath
       exitWith $ ExitFailure 3
   depsmod <- mapM getModificationTime deps
-  destmod <- catch (getModificationTime destpath) (\_ -> return $ TOD 0 0)
+  destmod <- catch (getModificationTime destpath)
+                   (\(_::SomeException) -> return $ TOD 0 0)
   if maximum depsmod > destmod
      then do
        createDirectoryIfMissing True $ takeDirectory destpath
