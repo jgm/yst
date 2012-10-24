@@ -140,7 +140,8 @@ converterForFormat :: Format -> String -> String
 converterForFormat f =
   let reader = readMarkdown defaultParserState{stateSmart = True}
   in  case f of
-       HtmlFormat          -> writeHtmlString defaultWriterOptions . reader
+       HtmlFormat          -> writeHtmlString defaultWriterOptions{
+                                  writerHtml5 = True } . reader
        LaTeXFormat         -> writeLaTeX defaultWriterOptions . reader
        PlainFormat         -> id
        ConTeXtFormat       -> writeConTeXt defaultWriterOptions . reader

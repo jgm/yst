@@ -1,8 +1,6 @@
-@import url("reset-fonts-grids.css");
-@import url("base-min.css");
 @import url("hk-pyg.css");
 
-html { background: #f9f9f9; color: black; } 
+body { background: #f9f9f9; color: black; }
 
 hr { height: 1px; color: #aaa; background-color: #aaa; border: 0; margin: .2em 0 .2em 0; }
 
@@ -24,12 +22,10 @@ th, td { border-bottom: 1px solid #ddd; border-right: 1px solid #ccc; }
 blockquote { padding: 0 1.6em; color: #666; }
 
 /* COLORS */
-
 a:link { text-decoration: underline; color: #36c; }
 a:visited { text-decoration: underline; color: #99c; }
 a:hover { text-decoration: underline; color: #c33; }
 a:active,  a:focus { text-decoration: underline; color: #000; }
-/* code,  pre { color: #c33; } /* very optional, but still useful. W3C uses about the same colors for codes */
 
 h1 > a:link, h1 > a:active, h1 > a:hover, h1 > a:focus, h1 > a:visited,
 h2 > a:link, h2 > a:active, h2 > a:hover, h2 > a:focus, h2 > a:visited,
@@ -43,9 +39,9 @@ h6 > a:link, h6 > a:active, h6 > a:hover, h6 > a:focus, h6 > a:visited {
 
 div#maincol { max-width: 46em; }
 
-#footer { padding: 1em; color: #888; text-align: center; font-size: 93%; }
+footer { padding: 1em; color: #888; text-align: center; font-size: 93%; }
 
-div#nav { margin-top: 2em; }
+div#nav { margin-top: 2em; padding-left: 1em; }
 div#nav ul { margin-top: 0; margin-left: 1em; margin-bottom: 0; }
 div#nav ul li { list-style: none; padding-bottom: 0.1em; }
 div#nav ul li.current { list-style: square; }
