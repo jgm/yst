@@ -138,17 +138,17 @@ renderPage site page = do
 
 converterForFormat :: Format -> String -> String
 converterForFormat f =
-  let reader = readMarkdown defaultParserState{stateSmart = True}
+  let reader = readMarkdown def {readerSmart = True}
   in  case f of
-       HtmlFormat          -> writeHtmlString defaultWriterOptions . reader
-       LaTeXFormat         -> writeLaTeX defaultWriterOptions . reader
+       HtmlFormat          -> writeHtmlString def . reader
+       LaTeXFormat         -> writeLaTeX def . reader
        PlainFormat         -> id
-       ConTeXtFormat       -> writeConTeXt defaultWriterOptions . reader
-       ManFormat           -> writeMan defaultWriterOptions . reader
-       RTFFormat           -> writeRTF defaultWriterOptions . reader
-       DocBookFormat       -> writeDocbook defaultWriterOptions . reader
-       TexinfoFormat       -> writeTexinfo defaultWriterOptions . reader
-       OpenDocumentFormat  -> writeOpenDocument defaultWriterOptions . reader
+       ConTeXtFormat       -> writeConTeXt def . reader
+       ManFormat           -> writeMan def . reader
+       RTFFormat           -> writeRTF def . reader
+       DocBookFormat       -> writeDocbook def . reader
+       TexinfoFormat       -> writeTexinfo def . reader
+       OpenDocumentFormat  -> writeOpenDocument def . reader
 
 getTemplate :: Stringable a => String -> STGroup a -> IO (StringTemplate a)
 getTemplate templateName templateGroup = do
