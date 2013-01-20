@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -24,14 +25,19 @@ import Text.CSV
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
 -- So we use System.IO.UTF8 only if we have an earlier version
 #if MIN_VERSION_base(4,2,0)
+import Prelude hiding (catch)
 #else
-import Prelude hiding (readFile)
+import Prelude hiding (readFile, catch)
 import System.IO.UTF8
 #endif
+import Control.Exception (catch, SomeException)
 
 readCSVFile :: FilePath -> IO Node
-readCSVFile f = catch (readFile f >>= return . csvToNode . parseCSV' f . stripBlanks . filter (/='\r'))
-                   (\e -> errorExit 11 ("Error parsing " ++ f ++ ": " ++ show e) >> return NNil)
+readCSVFile f = catch (toNode `fmap` readFile f)
+                      (\(e::SomeException) -> do
+                         errorExit 11 ("Error parsing " ++ f ++ ": " ++ show e)
+                         return NNil)
+  where toNode = csvToNode . parseCSV' f . stripBlanks . filter (/='\r')
 
 parseCSV' :: FilePath -> String -> CSV
 parseCSV' f s = case parseCSV f s of

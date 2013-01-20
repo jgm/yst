@@ -26,9 +26,9 @@ import qualified Data.Map as M
 
 data Site = Site {
     siteTitle     :: String
-  , sourceDir     :: FilePath
-  , dataDir       :: FilePath
-  , filesDir      :: FilePath
+  , sourceDir     :: [FilePath]
+  , dataDir       :: [FilePath]
+  , filesDir      :: [FilePath]
   , deployDir     :: FilePath
   , defaultLayout :: FilePath
   , indexFile     :: FilePath
@@ -75,6 +75,7 @@ instance Ord Node where
 
 data DataSpec = DataConstant Node
               | DataFromFile FilePath [DataOption]
+              | DataFromSqlite3 FilePath String [DataOption]
               deriving (Show, Read, Eq)
 
 data DataOption = OrderBy [(String, SortDirection)]

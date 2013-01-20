@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -32,32 +33,39 @@ import System.Time (ClockTime(..))
 -- So we use System.IO.UTF8 only if we have an earlier version
 #if MIN_VERSION_base(4,2,0)
 import System.IO (hPutStrLn)
+import Prelude hiding (catch)
 #else
-import Prelude hiding (readFile, putStrLn, print, writeFile)
+import Prelude hiding (readFile, putStrLn, print, writeFile, catch)
 import System.IO.UTF8
 #endif
 import System.IO (stderr)
 import Control.Monad
+import Control.Exception (catch, SomeException)
 
-dependencies :: Site -> String -> [FilePath]
-dependencies site url =
+findSource :: Site -> FilePath -> IO FilePath
+findSource = searchPath . sourceDir
+
+dependencies :: Site -> String -> IO [FilePath]
+dependencies site url = do
   let page = case M.lookup url (pageIndex site) of
                   Nothing   -> error $ "Tried to get dependencies for nonexistent page: " ++ url
                   Just pg   -> pg
-      layout = sourceDir site </> stripStExt (fromMaybe (defaultLayout site) $ layoutFile page) <.> "st"
-      requires = map (sourceDir site </>) $ requiresFiles page
-      srcdir = sourceDir site </>
+  layout <- findSource site $ stripStExt (fromMaybe (defaultLayout site) $ layoutFile page) <.> "st"
+  requires <- mapM (findSource site) $ requiresFiles page
+  srcdir <- findSource site $
                  case sourceFile page of
                        TemplateFile f -> stripStExt f <.> "st"
                        SourceFile f   -> f
-      fileFromSpec (DataFromFile f _) = Just f
+  let fileFromSpec (DataFromFile f _) = Just f
+      fileFromSpec (DataFromSqlite3 f _ _) = Just f
       fileFromSpec _ = Nothing
-      dataFiles = map (dataDir site </>) $ mapMaybe (\(_,s) -> fileFromSpec s) $ pageData page
-  in  indexFile site : layout : srcdir : (requires ++ dataFiles)
+  dataFiles <- mapM (searchPath $ dataDir site) $ mapMaybe (\(_,s) -> fileFromSpec s) $ pageData page
+  return $ indexFile site : layout : srcdir : (requires ++ dataFiles)
 
 buildSite :: Site -> IO ()
 buildSite site = do
-  files <- liftM (filter (/=".") . map (makeRelative $ filesDir site)) $ getDirectoryContentsRecursive $ filesDir site
+  let filesIn dir = liftM (filter (/=".") . map (makeRelative dir)) $ getDirectoryContentsRecursive dir
+  files <- liftM concat $ mapM filesIn $ filesDir site
   let pages = M.keys $ pageIndex site
   let overlap = files `intersect` pages
   unless (null overlap) $ forM_ overlap
@@ -72,9 +80,10 @@ buildSite site = do
 updateFile :: Site -> FilePath -> IO ()
 updateFile site file = do
   let destpath = deployDir site </> file
-  let srcpath = filesDir site </> file
+  srcpath <- searchPath (filesDir site) file
   srcmod <- getModificationTime srcpath
-  destmod <- catch (getModificationTime destpath) (\_ -> return $ TOD 0 0)
+  destmod <- catch (getModificationTime destpath)
+                   (\(_::SomeException) -> return $ TOD 0 0)
   if srcmod > destmod
      then do
        createDirectoryIfMissing True $ takeDirectory destpath
@@ -85,7 +94,7 @@ updateFile site file = do
 updatePage :: Site -> Page -> IO ()
 updatePage site page = do
   let destpath = deployDir site </> pageUrl page
-  let deps = dependencies site $ pageUrl page
+  deps <- dependencies site $ pageUrl page
   forM_ deps $ \dep -> do
     exists <- doesFileExist dep
     unless exists $ do
@@ -93,7 +102,8 @@ updatePage site page = do
       hPutStrLn stderr $ "Aborting!  Cannot build " ++ destpath
       exitWith $ ExitFailure 3
   depsmod <- mapM getModificationTime deps
-  destmod <- catch (getModificationTime destpath) (\_ -> return $ TOD 0 0)
+  destmod <- catch (getModificationTime destpath)
+                   (\(_::SomeException) -> return $ TOD 0 0)
   if maximum depsmod > destmod
      then do
        createDirectoryIfMissing True $ takeDirectory destpath

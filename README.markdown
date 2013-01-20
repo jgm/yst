@@ -2,7 +2,8 @@
 ======================================================
 
 `yst` is a tool for generating a static website by filling [string
-template][]s with data taken from [YAML][] or [CSV][] text files. This approach
+template][]s with data taken from [YAML][] or [CSV][] text files or 
+[SQLite3][] file based databases. This approach
 combines the speed, security, and ease of deployment of a static
 website with the flexibility and maintainability of a dynamic site that
 separates presentation and data.
@@ -175,14 +176,20 @@ The configuration file specifies the following:
 
 - `indexfile`: the filename of the index file (default: `index.yaml`)
 - `title`:  the title of the whole site
-- `sourcedir`:  the directory containing all the templates and page sources
+- `sourcedir`:  list of directories containing templates and page sources
   (default: `.`)
-- `datadir`:  the directory containing yaml data files (default: `.`)
-- `filesdir`: the directory containing static files (default: `files`)
+- `datadir`:  list of directories containing yaml data files (default: `.`)
+- `filesdir`: list of directories containing static files (default: `files`)
 - `layout`: the default layout template for the site, relative to
   `sourcedir` (default: `layout.html.st`)
 - `deploydir`: the directory where the generated site is deplayed 
   (default `site`) 
+
+The directories specified by `sourcedir` and `datadir` are searched in
+order to find source/template or data files, respectively.  This allows
+for a `../templates` directory to be shared among multiple sites, for
+example.  Static files are merged from the contents of all directories
+in `filesdir`. All of these accept a string as a singleton list.
 
 ### `index.yaml` and submenus
 
@@ -223,20 +230,26 @@ Subtrees can contain other subtrees.  Just be consistent about indentation.
 
 ### The `data` field
 
-The `data` field in `index.yaml` can populate any number of stringtemplate
-attributes with data from YAML or CSV files.  The syntax is easiest to
-explain by example (note that the keywords do not have to be in ALL CAPS,
-although they may, and the query doesn't have to end with a semicolon,
-though it may):
+The `data` field in `index.yaml` can populate any number of
+stringtemplate attributes with data from YAML or CSV files or SQLite3
+databases.  The syntax is easiest to explain by example (note that the
+keywords do not have to be in ALL CAPS, although they may, and the
+query doesn't have to end with a semicolon, though it may):
 
     data:
         events:  from events.yaml order by date desc group by title then location
         people:  from people.csv order by birthday then lastname where
                   birthstate = 'CA' limit 5
+        beststudents: from students.sqlite 
+                  query "select * from students where grade > 5"
+                  order by name
 
 First we have the name of the stringtemplate attribute to be populated
 (say, `events`).  Then, after the colon, we have the data source
-(`events.yaml`) followed by one or more *transformations*, which will
+(`events.yaml`). If the data source is an SQLite3 database, it should be
+followed by a query that is a quoted string.
+
+The data source is followed by  one or more *transformations*, which will
 be applied in order.  Here are the possible transformations.  In
 what follows, brackets denote an optional component, `|` denotes
 alternatives, and `*` indicates that the component may be repeated
@@ -440,6 +453,20 @@ database, you can use a query like this to get the CSV:
 (Thanks to
 <http://www.terminally-incoherent.com/blog/2006/07/20/dump-mysql-table-into-csv-file/>.)
 
+### Using a SQLite database as data source
+
+You can also get the data directly from a database. Just give the file
+name from the database followed by a query quoted in "'s
+
+In this way you can do joins and other advanced operations on your
+data before handing them over to yst:
+
+    data:
+      meetings : FROM data.sqlite 
+                 QUERY "select * from meetings 
+                   left outer join persons
+                   on meetings.speaker = persons.name"
+
 ### Using HTML in the templates
 
 Markdown allows raw HTML to be used, so you can embed HTML in templates.
@@ -530,6 +557,7 @@ If you find a bug, please report it using
 [string template]: http://www.stringtemplate.org/
 [YAML]: http://www.yaml.org/
 [CSV]: http://en.wikipedia.org/wiki/Comma-separated_values
+[SQLite3]: http://www.sqlite.org/
 [cabal install]: http://hackage.haskell.org/trac/hackage/wiki/CabalInstall
 [Haskell platform]: http://hackage.haskell.org/platform/
 [markdown]: http://daringfireball.com/markdown

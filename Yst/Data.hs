@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ScopedTypeVariables, FlexibleContexts #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -23,17 +23,33 @@ import Yst.Types
 import Yst.Util
 import Yst.Yaml
 import Yst.CSV
+import Yst.Sqlite3 (readSqlite3)
 import Control.Monad
 import Data.Char
 import Data.Maybe (fromMaybe)
 import Data.List (sortBy, nub, isPrefixOf)
 import Text.ParserCombinators.Parsec
-import System.FilePath (takeExtension, (</>))
+import System.FilePath (takeExtension)
+import Prelude hiding (catch)
+import Control.Exception (catch, SomeException)
+
+findData :: Site -> FilePath -> IO FilePath
+findData = searchPath . dataDir
 
 getData :: Site -> DataSpec -> IO Node
 getData site (DataFromFile file opts) = do
-  raw <- catch (readDataFile $  dataDir site </> file)
-          (\e -> errorExit 15 ("Error reading data from " ++ file ++ ": " ++ show e) >> return undefined)
+  raw <- catch (findData site file >>= readDataFile)
+               (\(e::SomeException) -> do
+                  errorExit 15 ("Error reading data from " ++ file ++ ": "
+                     ++ show e)
+                  return undefined)
+  return $ foldl applyDataOption raw opts
+getData site (DataFromSqlite3 database query opts) = do
+  raw <- catch (findData site database >>= \d -> readSqlite3 d query)
+               (\(e::SomeException) -> do
+                  errorExit 15 ("Error reading Sqlite3 database from " ++
+                    database ++ ": " ++ show e)
+                  return undefined)
   return $ foldl applyDataOption raw opts
 getData _ (DataConstant n) = return n
 
@@ -103,18 +119,20 @@ reverseIfDescending Descending GT = LT
 
 parseDataField :: Node -> DataSpec
 parseDataField n@(NString s) = case parse pDataField s s of
-  Right (f,opts)  -> DataFromFile f opts
+  Right (f, Nothing, opts)  -> DataFromFile f opts
+  Right (f, Just query, opts) -> DataFromSqlite3 f query opts
   Left err        -> if "from" `isPrefixOf` (dropWhile isSpace $ map toLower s)
                         then error $ "Error parsing data field: " ++ show err
                         else DataConstant n 
 parseDataField n = DataConstant n
 
-pDataField :: GenParser Char st ([Char], [DataOption])
+pDataField :: GenParser Char st (String, Maybe String,[DataOption])
 pDataField = do
   spaces
   pString "from"
   pSpace
-  fname <- pIdentifier <?> "name of YAML or CSV file"
+  fname <- pIdentifier <?> "name of YAML, CSV or SQLite3 file"
+  query <- (optionMaybe $ pQuery) <?> "a SQL query"
   opts <- many $ (pOptWhere <?> "where [CONDITION]")
               <|> (pOptLimit <?> "limit [NUMBER]")
               <|> (pOptOrderBy <?> "order by [CONDITION]")
@@ -123,7 +141,7 @@ pDataField = do
   optional $ char ';'
   spaces
   eof
-  return (fname, opts)
+  return (fname, query, opts)
 
 pIdentifier :: GenParser Char st [Char]
 pIdentifier = spaces >> (pQuoted '\'' <|> pQuoted '"' <|> many (noneOf " \t\n<>=;,'\""))
@@ -141,6 +159,15 @@ pQuoted delim = try $ do
   char delim
   res <- many (noneOf [delim] <|> (try $ char '\\' >> char delim))
   char delim
+  return res
+
+pQuery :: GenParser Char st String
+pQuery = try $ do
+  optional $ oneOf ",;"
+  spaces
+  pString "query"
+  pSpace
+  res <- pQuoted '"'
   return res
 
 pOptLimit :: GenParser Char st DataOption
