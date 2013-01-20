@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, CPP #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -28,7 +28,12 @@ import Data.List
 import System.FilePath
 import System.Directory
 import System.Exit
+#if MIN_VERSION_directory(1,2,0)
+import Data.Time.Calendar (Day(..))
+import Data.Time.Clock (UTCTime(..), secondsToDiffTime)
+#else
 import System.Time (ClockTime(..))
+#endif
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
 -- So we use System.IO.UTF8 only if we have an earlier version
 #if MIN_VERSION_base(4,2,0)
@@ -41,6 +46,15 @@ import System.IO.UTF8
 import System.IO (stderr)
 import Control.Monad
 import Control.Exception (catch, SomeException)
+
+#if MIN_VERSION_directory(1,2,0)
+minTime :: UTCTime
+minTime = UTCTime (ModifiedJulianDay 0) (secondsToDiffTime 0)
+#else
+minTime :: ClockTime
+minTime = TOD 0 0
+#endif
+
 
 findSource :: Site -> FilePath -> IO FilePath
 findSource = searchPath . sourceDir
@@ -83,7 +97,7 @@ updateFile site file = do
   srcpath <- searchPath (filesDir site) file
   srcmod <- getModificationTime srcpath
   destmod <- catch (getModificationTime destpath)
-                   (\(_::SomeException) -> return $ TOD 0 0)
+                   (\(_::SomeException) -> return minTime)
   if srcmod > destmod
      then do
        createDirectoryIfMissing True $ takeDirectory destpath
@@ -103,7 +117,7 @@ updatePage site page = do
       exitWith $ ExitFailure 3
   depsmod <- mapM getModificationTime deps
   destmod <- catch (getModificationTime destpath)
-                   (\(_::SomeException) -> return $ TOD 0 0)
+                   (\(_::SomeException) -> return minTime)
   if maximum depsmod > destmod
      then do
        createDirectoryIfMissing True $ takeDirectory destpath
