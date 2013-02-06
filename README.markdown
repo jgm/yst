@@ -31,6 +31,12 @@ which failed to install," then try the following:
     cabal install syb-with-class-0.6
     cabal install yst
 
+Also, if you receive an error announcing you "HDBC-sqlite3-2.3.3.0" got some errors installing, make sure you have sqlite3 
+installed `sqlite3 -version`. If this would not return the version try install it.
+
+    sudo apt-get install sqlite3 libsqlite3-dev
+    cabal install yst
+
 Getting started
 ---------------
 
