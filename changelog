@@ -1,3 +1,7 @@
+yst 0.3.1.1 (released 08 Mar 2013)
+
+  * Updated to compile with pandoc 1.11.
+
 yst 0.3.1 (released 19 Jan 2013)
 
   * Updated to compile with pandoc 1.10, directory 1.2.
