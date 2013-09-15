@@ -1,3 +1,7 @@
+yst 0.4.0.1 (released 15 Sep 2013)
+
+  * Removed unneeded build-depends.
+
 yst 0.4 (released 15 Sep 2013)
 
   * Use yaml package instead of HsSyck.
