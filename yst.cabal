@@ -54,9 +54,9 @@ Executable           yst
   main-is:           yst.hs
   other-modules:     Yst.Types, Yst.Yaml, Yst.Util, Yst.Data, Yst.Config,
                      Yst.Render, Yst.Build, Yst.CSV, Yst.Sqlite3
-  build-depends:     base >=3 && < 5,
-                     HStringTemplate >= 0.6.1 && < 0.6.9 || > 0.6.11 && < 0.7,
-                     HsSyck, csv,
+  build-depends:     base >=3 && < 5, unordered-containers,
+                     HStringTemplate >= 0.6.1 && < 0.6.9 || > 0.6.11 && < 0.8,
+                     yaml, csv, aeson, text,
                      filepath, containers, directory, utf8-string, time,
                      old-locale, old-time, parsec, xhtml,
                      pandoc >= 1.10 && < 1.13, bytestring,

@@ -17,74 +17,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -}
 
-module Yst.Yaml (readYamlFile, nodeToYamlNode)
+module Yst.Yaml (readYamlFile)
 where
 import Yst.Types
-import Yst.Util
-import Data.Yaml.Syck hiding (unpackBuf, packBuf)
-import qualified Data.Yaml.Syck (unpackBuf, packBuf)
-import Data.Time
-import System.Locale (defaultTimeLocale)
-import Codec.Binary.UTF8.String (encodeString, decodeString)
-import qualified Data.ByteString.Char8 as B (ByteString, readFile, filter)
-import Prelude hiding (catch)
-import Control.Exception (catch, SomeException)
-
--- Note: Syck isn't unicode aware, so we use parseYamlBytes and do our
--- own encoding and decoding.
-
-type Buf = B.ByteString
-
-unpackBuf :: Buf -> String
-unpackBuf = decodeString . Data.Yaml.Syck.unpackBuf
-
-packBuf :: String -> Buf
-packBuf = Data.Yaml.Syck.packBuf . encodeString
+import Data.Yaml
 
 readYamlFile :: FilePath -> IO Node
-readYamlFile f = catch (B.readFile f
-                        >>= parseYamlBytes . B.filter (/='\r')
-                        >>= return . yamlNodeToNode)
-                        (\(e::SomeException) -> do
-                             errorExit 11 ("Error parsing " ++ f ++ ": " ++
-                                show e)
-                             return NNil)
+readYamlFile f =
+  (maybe (error $ "Could not parse " ++ f) id) `fmap` decodeFile f
 
-yamlNodeToNode :: YamlNode -> Node
-yamlNodeToNode n =
-  case n_elem n of
-        EStr s  -> case parseAsDate (unpackBuf s) of
-                        Nothing  -> NString (unpackBuf s)
-                        Just d   -> NDate d
-        EMap xs | all (\(k,_) -> isStrNode k) xs -> NMap pairs
-                     where pairs = foldr addPair [] xs
-                           addPair (k,v) acc = if isStrNode k && strFrom k == "<<"  -- hash merge, unsupported in Syck!
-                                                  then case n_elem v of             -- so we do it ourselves
-                                                            EMap ys -> foldr addPair acc ys
-                                                            _       -> error "Tried hash merge on non-hash"
-                                                  else case lookup kstr acc of
-                                                             Just _  -> acc   -- overridden
-                                                             Nothing -> (kstr, yamlNodeToNode v) : acc
-                                                          where kstr = strFrom k
-        EMap _  -> error "Map keys must all be strings."
-        ESeq xs -> NList $ map yamlNodeToNode xs
-        ENil    -> NNil
-
-nodeToYamlNode :: Node -> YamlNode
-nodeToYamlNode n =
-  case n of
-       NString s -> mkNode (EStr $ packBuf s)
-       NDate s   -> mkNode (EStr $ packBuf $ formatTime defaultTimeLocale "%x" s)
-       NMap xs   -> mkNode (EMap $ map (\(k,v) -> (nodeToYamlNode (NString k), nodeToYamlNode v)) xs)
-       NList xs  -> mkNode (ESeq $ map nodeToYamlNode xs)
-       NNil      -> mkNode ENil
-
-isStrNode :: YamlNode -> Bool
-isStrNode x = case n_elem x of
-                   EStr _ -> True
-                   _      -> False
-
-strFrom :: YamlNode -> String
-strFrom x = case n_elem x of
-                 EStr z   -> unpackBuf z
-                 _        -> error "expected EStr node"

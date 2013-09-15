@@ -30,21 +30,12 @@ import System.IO (hPutStrLn)
 import System.IO.UTF8 (hPutStrLn)
 #endif
 import System.Directory
-import Control.Monad
-import Data.Time
 import Data.List (intercalate)
 import Data.Char (isSpace)
-import System.Locale (defaultTimeLocale)
 
 -- | Strip blank lines from a file.
 stripBlanks :: String -> String
 stripBlanks = intercalate "\n" . filter (not . all isSpace) . lines
-
-parseAsDate :: (ParseTime t) => String -> Maybe t
-parseAsDate s =
-  msum $ map (\fs -> parsetimeWith fs s) formats
-   where parsetimeWith = parseTime defaultTimeLocale
-         formats = ["%x","%m/%d/%Y", "%D","%F", "%d %b %Y"]
 
 stripStExt :: FilePath -> FilePath
 stripStExt f =

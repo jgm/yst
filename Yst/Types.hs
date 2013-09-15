@@ -20,9 +20,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 module Yst.Types
 where
 import Data.Char
+import qualified Data.HashMap.Strict as H
 import Data.Time
+import qualified Data.Text as T
 import Text.StringTemplate
+import Data.Aeson
 import qualified Data.Map as M
+import System.Locale (defaultTimeLocale)
+import Control.Monad
 
 data Site = Site {
     siteTitle     :: String
@@ -49,29 +54,6 @@ data Page = Page {
   , pageTitle     :: String
   , pageInMenu    :: Bool
   } deriving (Show, Read, Eq)
-
-data NavNode = NavPage String String
-             | NavMenu String [NavNode]
-             deriving (Show, Read, Eq)
-
-data Node = NString String
-          | NDate Day
-          | NList [Node]
-          | NMap [(String, Node)]
-          | NNil
-          deriving (Show, Read, Eq)
-
-instance Ord Node where
-  compare (NString x) (NString y)   = compare x y
-  compare (NDate x) (NDate y)       = compare x y
-  compare (NList x) (NList y)       = compare x y
-  compare (NMap x) (NMap y)         = compare x y
-  compare NNil NNil                 = EQ
-  compare (NList x) y               = compare (NList x) (NList [y])
-  compare x (NList y)               = compare (NList [x]) (NList y)
-  compare (NString _) _             = GT
-  compare (NDate _) _               = GT
-  compare _ _                       = GT
 
 data DataSpec = DataConstant Node
               | DataFromFile FilePath [DataOption]
@@ -102,6 +84,58 @@ data FilterTest = TestEq
                 | TestLtEq
                 | TestContains
                 deriving (Show, Read, Eq)
+
+data NavNode = NavPage String String
+             | NavMenu String [NavNode]
+             deriving (Show, Read, Eq)
+
+data Node = NString String
+          | NDate Day
+          | NList [Node]
+          | NMap [(String, Node)]
+          | NNil
+          deriving (Show, Read, Eq)
+
+instance Ord Node where
+  compare (NString x) (NString y)   = compare x y
+  compare (NDate x) (NDate y)       = compare x y
+  compare (NList x) (NList y)       = compare x y
+  compare (NMap x) (NMap y)         = compare x y
+  compare NNil NNil                 = EQ
+  compare (NList x) y               = compare (NList x) (NList [y])
+  compare x (NList y)               = compare (NList [x]) (NList y)
+  compare (NString _) _             = GT
+  compare (NDate _) _               = GT
+  compare _ _                       = GT
+
+instance FromJSON Node where
+  parseJSON (String t) = do
+    let t' = T.unpack t
+    case parseAsDate t' of
+         Nothing -> return $ NString t'
+         Just d  -> return $ NDate d
+  parseJSON (Object h) = case fromJSON (Object $ handleMerges h) of
+                                Success y -> return $ NMap $ M.toList y
+                                _         -> mzero
+  parseJSON x@(Array _) = case fromJSON x of
+                               Success y -> return $ NList y
+                               _         -> mzero
+  parseJSON (Bool b) = return $ NString $ show b
+  parseJSON (Number y) = return $ NString $ show y
+  parseJSON _ = return $ NNil
+
+handleMerges :: H.HashMap T.Text Value -> H.HashMap T.Text Value
+handleMerges = H.foldrWithKey go H.empty
+  where go k (Object h) m | isMerge k = H.foldrWithKey go m h
+        go k v m = H.insert k v m
+        isMerge k = k == T.pack "<<"
+
+instance ToJSON Node where
+  toJSON (NDate s) = toJSON (NString $ formatTime defaultTimeLocale "%x" s)
+  toJSON (NString s) = toJSON s
+  toJSON (NMap xs) = toJSON $ M.fromList xs
+  toJSON (NList xs) = toJSON xs
+  toJSON (NNil) = toJSON ()
 
 data SortDirection = Ascending | Descending deriving (Show, Read, Eq)
 
@@ -135,3 +169,9 @@ instance ToSElem Node
          NList xs    -> toSElem xs
          NMap xs     -> toSElem $ M.fromList xs
          NNil        -> toSElem ""
+
+parseAsDate :: (ParseTime t) => String -> Maybe t
+parseAsDate s =
+  msum $ map (\fs -> parsetimeWith fs s) formats
+   where parsetimeWith = parseTime defaultTimeLocale
+         formats = ["%x","%m/%d/%Y", "%D","%F", "%d %b %Y"]

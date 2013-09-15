@@ -5,7 +5,6 @@ import Database.HDBC
 import Database.HDBC.Sqlite3
 import Data.Maybe
 import Yst.Types
-import Yst.Util (parseAsDate)
 
 readSqlite3 :: FilePath -> String -> IO Node
 readSqlite3 filename query = do
