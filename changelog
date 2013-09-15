@@ -1,3 +1,9 @@
+yst 0.4 (released 15 Sep 2013)
+
+  * Use yaml package instead of HsSyck.
+  * Data.Yaml no longer exports nodeToYamlNode.  (We use ToJSON
+    and FromJSON instances instead.)
+
 yst 0.3.1.2 (released 15 Sep 2013)
 
   * Updated to compile with pandoc 1.12.
