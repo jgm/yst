@@ -59,7 +59,7 @@ Executable           yst
                      HsSyck, csv,
                      filepath, containers, directory, utf8-string, time,
                      old-locale, old-time, parsec, xhtml,
-                     pandoc >= 1.10 && < 1.12, bytestring,
+                     pandoc >= 1.10 && < 1.13, bytestring,
                      split, HDBC, HDBC-sqlite3
   extensions:        CPP
   if impl(ghc >= 6.12)
