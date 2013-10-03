@@ -70,6 +70,7 @@ data FilterCond = Filter FilterTest FilterArg FilterArg
                 | And FilterCond FilterCond
                 | Or  FilterCond FilterCond
                 | Not FilterCond
+                | Has String
                 deriving (Show, Read, Eq)
 
 data FilterArg = AttrValue String
