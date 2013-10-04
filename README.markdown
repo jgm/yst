@@ -279,16 +279,20 @@ of lists of lists, and so on.
 
 >   Selects only items that meet a condition.
 
->   A *condition* in a `WHERE` statement is a Boolean combination (using
+> A *condition* in a `WHERE` statement is a Boolean combination (using
 `NOT`, `AND`, `OR`, and parentheses for disambiguation) of *basic
-conditions*.  A *basic condition* is of the form `value op value`,
-where `value` may be either a fieldname or a constant.  Note that
-all constants must be enclosed in quotes.  `op` may be one of the
-following:  `=`, `>=`, `<=`, `>`, `<` and 'contains'.
+conditions*.  A *basic condition* is either of the form `value op
+value`, where `value` may be either a fieldname or a constant, or of
+the form `HAS fieldname' where `fieldname' is a string constant.  Note
+that all constants must be enclosed in quotes.  `op` may be one of the
+following: `=`, `>=`, `<=`, `>`, `<` and 'contains'.
 
 > The basic condition `arg1 contains arg2` succeeds if and only if
 `arg1` is a fieldname whose value is a list containing the value of
 `arg2`.
+
+> The basic condition `HAS fieldname' succeeds if and only if the item
+has the fieldname as a field. For example, `HAS "data"'. 
 
 Note that the order of transformations is significant.  You can get
 different results if you use `LIMIT` before or after `ORDER BY`,

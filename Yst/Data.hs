@@ -77,9 +77,11 @@ applyDataOption (NList ns) (OrderBy xs) =
 applyDataOption _ _ = error "order by and group by can be used only on lists"
 
 satisfiesCond :: FilterCond -> Node -> Bool
-satisfiesCond (And c1 c2) n = satisfiesCond c1 n && satisfiesCond c2 n
-satisfiesCond (Or  c1 c2) n = satisfiesCond c1 n || satisfiesCond c2 n
-satisfiesCond (Not c1)    n = not (satisfiesCond c1 n)
+satisfiesCond (And c1 c2)     n = satisfiesCond c1 n && satisfiesCond c2 n
+satisfiesCond (Or  c1 c2)     n = satisfiesCond c1 n || satisfiesCond c2 n
+satisfiesCond (Not c1)        n = not (satisfiesCond c1 n)
+satisfiesCond (Has s) (NMap ns) = elem s (map fst ns)
+satisfiesCond (Has _)        _  = False
 satisfiesCond (Filter test arg1 arg2) n =
   (filterTestPred test) (filterArgToNode arg1 n) (filterArgToNode arg2 n)
 
@@ -221,7 +223,7 @@ pOptWhere = try $ do
   return $ Where cond
 
 pBooleanCondition :: GenParser Char st FilterCond
-pBooleanCondition = spaces >> (pNot <|> pAnd <|> pOr <|> pInParens pBooleanCondition <|> pBasicCond)
+pBooleanCondition = spaces >> ( pHas <|> pNot <|> pAnd <|> pOr <|> pInParens pBooleanCondition <|> pBasicCond)
 
 pInParens :: GenParser Char st a -> GenParser Char st a
 pInParens innerParser = try $ do
@@ -234,6 +236,9 @@ pInParens innerParser = try $ do
 
 pNot :: GenParser Char st FilterCond
 pNot = try $ pString "not" >> pSpace >> liftM Not pBooleanCondition
+
+pHas :: GenParser Char st FilterCond
+pHas = try $ pString "has" >> pSpace >> liftM Has (pQuoted '"' <|> pQuoted '\'')
 
 pAnd :: GenParser Char st FilterCond
 pAnd = try $ do
