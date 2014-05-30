@@ -1,3 +1,9 @@
+yst 0.4.1 (released 30 May 2014)
+
+  * Fix rendering of integers in YAML when compiled against
+    recent versions of aeson.
+  * Added HAS to WHERE condition in queries (Ohad Kammar).
+
 yst 0.4.0.1 (released 15 Sep 2013)
 
   * Removed unneeded build-depends.
