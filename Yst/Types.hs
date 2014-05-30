@@ -27,6 +27,7 @@ import Text.StringTemplate
 import Data.Aeson
 import qualified Data.Map as M
 import System.Locale (defaultTimeLocale)
+import Data.Scientific (coefficient, base10Exponent)
 import Control.Monad
 
 data Site = Site {
@@ -122,7 +123,10 @@ instance FromJSON Node where
                                Success y -> return $ NList y
                                _         -> mzero
   parseJSON (Bool b) = return $ NString $ show b
-  parseJSON (Number y) = return $ NString $ show y
+  parseJSON (Number n)
+    | base10Exponent n >= 0 = return $ NString $ show $
+                                  coefficient n * (10 ^ base10Exponent n)
+    | otherwise             = return $ NString $ show n
   parseJSON _ = return $ NNil
 
 handleMerges :: H.HashMap T.Text Value -> H.HashMap T.Text Value

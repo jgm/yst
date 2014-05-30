@@ -56,7 +56,8 @@ Executable           yst
                      Yst.Render, Yst.Build, Yst.CSV, Yst.Sqlite3
   build-depends:     base >=3 && < 5, unordered-containers,
                      HStringTemplate >= 0.6.1 && < 0.6.9 || > 0.6.11 && < 0.8,
-                     yaml, csv, aeson, text,
+                     yaml, csv, aeson >= 0.7 && < 0.8, text,
+                     scientific >= 0.2 && < 0.4,
                      filepath, containers, directory, time,
                      old-locale, old-time, parsec, xhtml,
                      pandoc >= 1.10 && < 1.13,
