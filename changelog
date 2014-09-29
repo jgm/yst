@@ -1,3 +1,7 @@
+yst 0.4.1.1 (released 29 Sep 2014)
+
+  * Allow compilation with latest aeson, pandoc.
+
 yst 0.4.1 (released 30 May 2014)
 
   * Fix rendering of integers in YAML when compiled against
