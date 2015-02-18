@@ -55,7 +55,7 @@ Executable           yst
   other-modules:     Yst.Types, Yst.Yaml, Yst.Util, Yst.Data, Yst.Config,
                      Yst.Render, Yst.Build, Yst.CSV, Yst.Sqlite3
   build-depends:     base >=3 && < 5, unordered-containers,
-                     HStringTemplate >= 0.6.1 && < 0.6.9 || > 0.6.11 && < 0.8,
+                     HStringTemplate >= 0.6.1 && < 0.6.9 || > 0.6.11 && < 0.9,
                      yaml, csv, aeson >= 0.7 && < 0.9, text,
                      scientific >= 0.2 && < 0.4,
                      filepath, containers, directory, time,
