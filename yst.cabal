@@ -36,14 +36,9 @@ data-files:          README.markdown
                      demo/layout.tex.st
                      demo/room101.txt
                      demo/room203.txt
-                     demo/yahoo/css/base-min.css
                      demo/files/css/hk-pyg.css
-                     demo/files/css/ie.css
                      demo/files/css/print.css
-                     demo/yahoo/css/reset-fonts-grids.css
-                     demo/yahoo/css/reset-min.css
                      demo/files/css/screen.css
-                     demo/files/js/nav.js
 
 Source-repository    head
   type:              git

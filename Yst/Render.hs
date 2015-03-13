@@ -77,10 +77,11 @@ renderNavNode targeturl (NavPage tit pageurl) =
                      then [theclass "current"]
                      else []
 renderNavNode targeturl (NavMenu tit nodes) =
-  li ! attrs << [ toHtml $ hotlink "#" << (tit ++ " »")
-                , ulist ! attrs << map (renderNavNode targeturl) nodes ]
+  li ! [theclass "dropdown"] << [ toHtml $ hotlink "#" !
+                                    [theclass "dropdown-toggle", strAttr "data-toggle" "dropdown"] <<
+                                    (tit ++ " »")
+                , ulist ! [theclass "dropdown-menu"] << map (renderNavNode targeturl) nodes ]
     where active = targeturl `isInNavNodes` nodes
-          attrs = if active then [theclass "active"] else []
           isInNavNodes u = any (isInNavNode u)
           isInNavNode u (NavPage _ u') = u == u'
           isInNavNode u (NavMenu _ ns) = u `isInNavNodes` ns
