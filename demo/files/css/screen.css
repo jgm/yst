@@ -1,7 +1,15 @@
 @import url("hk-pyg.css");
 
-html { background: #f9f9f9; color: black; }
+body { padding: 10px;
+      font-size: 14pt;
+      font-family: Arial, sans-serif;
+      line-height: 1.4em; }
 
-main { max-width: 46em; }
+main { max-width: 46em;
+       border-left: 1px solid grey; }
+
+.navbar-default { background-color: white; border: none; }
+
+nav { margin-top: 1em; }
 
 footer { padding: 1em; color: #888; text-align: center; font-size: 93%; }
