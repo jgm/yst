@@ -24,7 +24,7 @@
   <body>
     <div class="container-fluid">
       <header>
-        <h1>Yst Demo Site</h1>
+        <h1>$sitetitle$</h1>
       </header>
       <div class="row">
         <nav id="navbar" class="navbar navbar-default col-md-2">
