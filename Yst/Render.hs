@@ -79,7 +79,7 @@ renderNavNode targeturl (NavPage tit pageurl) =
 renderNavNode targeturl (NavMenu tit nodes) =
   li_ [class_ "dropdown dropdown-submenu"] $
     do a_ [href_ "#", class_ "dropdown-toggle", data_ "toggle" "dropdown"]
-             (toHtml (tit ++ " »"))
+             (toHtml tit)
        ul_ [class_ "dropdown-menu"] (mapM_ (renderNavNode targeturl) nodes)
     where active = targeturl `isInNavNodes` nodes
           isInNavNodes u = any (isInNavNode u)

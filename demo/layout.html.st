@@ -27,7 +27,7 @@
         <h1>$sitetitle$</h1>
       </header>
       <div class="row">
-        <nav id="navbar" class="navbar navbar-default col-md-2">
+        <nav id="navbar" class="navbar nav navbar-default col-md-2">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle"
                     data-toggle="collapse" data-target=".navbar-collapse">
