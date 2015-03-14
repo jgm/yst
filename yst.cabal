@@ -54,7 +54,8 @@ Executable           yst
                      yaml, csv, aeson >= 0.7 && < 0.9, text,
                      scientific >= 0.2 && < 0.4,
                      filepath, containers, directory, time,
-                     old-locale, old-time, parsec, xhtml,
+                     old-locale, old-time, parsec,
+                     lucid >= 2.9 && < 2.10,
                      pandoc >= 1.10 && < 1.14,
                      split, HDBC, HDBC-sqlite3
   extensions:        CPP

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -23,11 +24,13 @@ import Yst.Util
 import Yst.Data
 import System.Directory
 import Text.Pandoc hiding (Format)
-import Text.XHtml hiding (option, (</>))
+import Lucid
 import Data.Char
 import Data.List (intercalate)
 import Data.List.Split (wordsBy)
 import Text.StringTemplate
+import Data.Text.Lazy (unpack)
+import Data.Text (pack)
 import Data.Maybe (fromMaybe)
 import System.FilePath
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
@@ -65,22 +68,19 @@ dropCommon (x:xs) (y:ys) | x == y = dropCommon xs ys
 dropCommon xs ys = (xs,ys)
 
 renderNav :: String -> [NavNode] -> String
-renderNav targeturl nodes = renderHtmlFragment $
-  ulist ! [theclass "nav"] << map (renderNavNode targeturl) nodes
+renderNav targeturl nodes = unpack $ renderText $
+  ul_ [class_ "nav"] $ mapM_ (renderNavNode targeturl) nodes
 
-renderNavNode :: String -> NavNode -> Html
+renderNavNode :: String -> NavNode -> Html ()
 renderNavNode targeturl (NavPage tit pageurl) =
-  li ! attrs << hotlink pageurl' << tit
+  li_ [class_ "current" | pageurl == targeturl] (a_ [href_ pageurl'] (toHtml tit))
     where targetdir = takeUrlDir targeturl
-          pageurl' = relUrl targetdir pageurl
-          attrs = if pageurl == targeturl
-                     then [theclass "current"]
-                     else []
+          pageurl' = pack $ relUrl targetdir pageurl
 renderNavNode targeturl (NavMenu tit nodes) =
-  li ! [theclass "dropdown"] << [ toHtml $ hotlink "#" !
-                                    [theclass "dropdown-toggle", strAttr "data-toggle" "dropdown"] <<
-                                    (tit ++ " »")
-                , ulist ! [theclass "dropdown-menu"] << map (renderNavNode targeturl) nodes ]
+  li_ [class_ "dropdown"] $
+    do a_ [href_ "#", class_ "dropdown-toggle", data_ "toggle" "dropdown"]
+             (toHtml (tit ++ " »"))
+       ul_ [class_ "dropdown-menu"] (mapM_ (renderNavNode targeturl) nodes)
     where active = targeturl `isInNavNodes` nodes
           isInNavNodes u = any (isInNavNode u)
           isInNavNode u (NavPage _ u') = u == u'
@@ -112,8 +112,8 @@ renderPage site page = do
   attrs <- forM (pageData page) $ \(k, v) -> getData site v >>= \n -> return (k,n)
   todaysDate <- liftM utctDay getCurrentTime
   let root' = case length (filter (=='/') $ pageUrl page) of
-                    0  -> ""
-                    n  -> concat $ replicate n "../"
+                    0  -> []
+                    n  -> concat $ replicate n ("../" :: String)
   rawContents <-
     case sourceFile page of
           SourceFile sf   -> liftM (filter (/='\r')) $ searchPath srcDirs sf >>= readFile
