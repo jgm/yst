@@ -1,3 +1,8 @@
+yst 0.5 (released 13 Mar 2015)
+
+  * Use Bootstrap 3 instead of YUI CSS framework.
+  * Use lucid instead of xhtml to generate menu.
+
 yst 0.4.1.1 (released 29 Sep 2014)
 
   * Allow compilation with latest aeson, pandoc.
