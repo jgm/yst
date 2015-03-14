@@ -139,7 +139,7 @@ converterForFormat :: Format -> String -> String
 converterForFormat f =
   let reader = readMarkdown def{readerSmart = True}
   in  case f of
-       HtmlFormat          -> writeHtmlString def . reader
+       HtmlFormat          -> writeHtmlString def{ writerHtml5 = True } . reader
        LaTeXFormat         -> writeLaTeX def . reader
        PlainFormat         -> id
        ConTeXtFormat       -> writeConTeXt def . reader
