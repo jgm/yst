@@ -1,3 +1,8 @@
+yst 0.5.0.2 (released 14 Mar 2015)
+
+  * Improved menus, using unfolding tree instead of pop-ups.
+  * Transparent background on menu.
+
 yst 0.5.0.1 (released 13 Mar 2015)
 
   * Minor menu formatting tweaks.
