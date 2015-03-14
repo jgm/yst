@@ -1,3 +1,8 @@
+yst 0.5.0.1 (released 13 Mar 2015)
+
+  * Minor menu formatting tweaks.
+  * Use sitetitle for default header.
+
 yst 0.5 (released 13 Mar 2015)
 
   * Use Bootstrap 3 instead of YUI CSS framework.
