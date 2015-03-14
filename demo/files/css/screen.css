@@ -14,7 +14,7 @@ nav { margin-top: 1em; }
 
 footer { padding: 1em; color: #888; text-align: center; font-size: 93%; }
 
-.navbar-default { background-color: white; border: none; }
+.navbar-default { background-color: transparent; border: none; }
 
 .dropdown-submenu {
     position:relative;
