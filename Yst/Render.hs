@@ -69,18 +69,16 @@ dropCommon xs ys = (xs,ys)
 
 renderNav :: String -> [NavNode] -> String
 renderNav targeturl nodes = unpack $ renderText $
-  ul_ [class_ "nav"] $ mapM_ (renderNavNode targeturl) nodes
+  ul_ [class_ "nav tree"] $ mapM_ (renderNavNode targeturl) nodes
 
 renderNavNode :: String -> NavNode -> Html ()
 renderNavNode targeturl (NavPage tit pageurl) =
   li_ [class_ "current" | pageurl == targeturl] (a_ [href_ pageurl'] (toHtml tit))
     where targetdir = takeUrlDir targeturl
           pageurl' = pack $ relUrl targetdir pageurl
-renderNavNode targeturl (NavMenu tit nodes) =
-  li_ [class_ "dropdown dropdown-submenu"] $
-    do a_ [href_ "#", class_ "dropdown-toggle", data_ "toggle" "dropdown"]
-             (toHtml tit)
-       ul_ [class_ "dropdown-menu"] (mapM_ (renderNavNode targeturl) nodes)
+renderNavNode targeturl (NavMenu tit nodes) = li_ [] $
+    do a_ [class_ "tree-toggle nav-header"] (toHtml tit)
+       ul_ [class_ "nav tree"] (mapM_ (renderNavNode targeturl) nodes)
     where active = targeturl `isInNavNodes` nodes
           isInNavNodes u = any (isInNavNode u)
           isInNavNode u (NavPage _ u') = u == u'

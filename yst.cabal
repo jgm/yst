@@ -36,6 +36,7 @@ data-files:          README.markdown
                      demo/layout.tex.st
                      demo/room101.txt
                      demo/room203.txt
+                     demo/files/js/nav.js
                      demo/files/css/hk-pyg.css
                      demo/files/css/print.css
                      demo/files/css/screen.css
