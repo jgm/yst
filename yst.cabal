@@ -64,4 +64,3 @@ Executable           yst
     ghc-options:     -Wall -threaded -fno-warn-orphans -fno-warn-unused-do-bind
   else
     ghc-options:     -Wall -threaded -fno-warn-orphans
-  ghc-prof-options:  -auto-all -caf-all
