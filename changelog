@@ -1,3 +1,9 @@
+yst 0.5.0.3 (released 02 Jun 2015)
+
+  * Updated to use pandoc 1.14, aeson 0.9, time 0.5.
+  * Use HTML5 in rendering pandoc.
+  * Added code to default css to collapse menu at "small" size.
+
 yst 0.5.0.2 (released 14 Mar 2015)
 
   * Improved menus, using unfolding tree instead of pop-ups.
