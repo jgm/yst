@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, CPP #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -42,6 +42,12 @@ import System.IO.UTF8
 #endif
 import Data.Time
 import Control.Monad
+#if MIN_VERSION_pandoc(1,14,0)
+import Text.Pandoc.Error (handleError)
+#else
+handleError :: Pandoc -> Pandoc
+handleError = id
+#endif
 
 -- | @relUrl a b@ returns a URL for @b@ relative to @a@.  So, for
 -- example, @relUrl "a" "a/b.html" = "b.html"@,
@@ -137,7 +143,7 @@ renderPage site page = do
 
 converterForFormat :: Format -> String -> String
 converterForFormat f =
-  let reader = readMarkdown def{readerSmart = True}
+  let reader = handleError . readMarkdown def{readerSmart = True}
   in  case f of
        HtmlFormat          -> writeHtmlString def{ writerHtml5 = True } . reader
        LaTeXFormat         -> writeLaTeX def . reader

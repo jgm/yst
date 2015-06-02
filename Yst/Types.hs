@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, CPP #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
 
@@ -26,9 +26,13 @@ import qualified Data.Text as T
 import Text.StringTemplate
 import Data.Aeson
 import qualified Data.Map as M
-import System.Locale (defaultTimeLocale)
 import Data.Scientific (coefficient, base10Exponent)
 import Control.Monad
+#if MIN_VERSION_time(1,5,0)
+import Data.Time.Format ( defaultTimeLocale )
+#else
+import System.Locale ( defaultTimeLocale )
+#endif
 
 data Site = Site {
     siteTitle     :: String
