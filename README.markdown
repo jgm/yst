@@ -2,7 +2,7 @@
 ======================================================
 
 `yst` is a tool for generating a static website by filling [string
-template][]s with data taken from [YAML][] or [CSV][] text files or 
+template][]s with data taken from [YAML][] or [CSV][] text files or
 [SQLite3][] file based databases. This approach
 combines the speed, security, and ease of deployment of a static
 website with the flexibility and maintainability of a dynamic site that
