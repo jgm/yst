@@ -1,3 +1,8 @@
+yst 0.5.1.1 (released 22 Mar 2016)
+
+  * Allow pandoc 1.17, aeson 0.11.
+  * Prefix `js/nav` file with `$root$` for nested paths (Cody Reichert).
+
 yst 0.5.1 (released 02 Jan 2015)
 
   * Allow building with pandoc 1.16.x.
