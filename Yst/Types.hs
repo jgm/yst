@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE FlexibleInstances, TypeSynonymInstances, CPP #-}
 {-
 Copyright (C) 2009 John MacFarlane <jgm@berkeley.edu>
@@ -182,5 +183,5 @@ instance ToSElem Node
 parseAsDate :: (ParseTime t) => String -> Maybe t
 parseAsDate s =
   msum $ map (\fs -> parsetimeWith fs s) formats
-   where parsetimeWith = parseTime defaultTimeLocale
+   where parsetimeWith = parseTimeM True defaultTimeLocale
          formats = ["%x","%m/%d/%Y", "%D","%F", "%d %b %Y"]
