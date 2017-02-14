@@ -22,7 +22,7 @@ Once you have `cabal`, you can install yst with two commands:
     cabal install yst
 
 (Note that by default, `cabal` installs the `yst` executable into
-a special directory:  `~\.cabal\bin` on unix systems.  You will need
+a special directory:  `~/.cabal/bin` on unix systems.  You will need
 to make sure that directory is in your system path.)
 
 If you get the error "yst-0.2.3 depends on template-haskell-2.4.0.0
