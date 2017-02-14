@@ -5,4 +5,5 @@ extra-deps:
 - texmath-0.9
 - doctemplates-0.1.0.2
 - pandoc-types-1.17.0.4
-resolver: lts-7.9
+- HDBC-sqlite3-2.3.3.1
+resolver: nightly-2016-07-11
