@@ -28,14 +28,50 @@ cache:
 # fast_finish: build successful when every builds not in allow_failure are finished
 # i.e. not waiting any of the allow_failure to finish
 matrix:
- include:
-  - env: CABALVER=1.18 GHCVER=7.8.4 GHCOPTS="" JOPTS="-j2"
-    addons: {apt: {packages: [cabal-install-1.18, ghc-7.8.4, happy-1.19.5], sources: [hvr-ghc]}}
-  - env: CABALVER=1.22 GHCVER=7.10.1 GHCOPTS="" JOPTS="-j2"
-    addons: {apt: {packages: [cabal-install-1.22, ghc-7.10.1, happy-1.19.5],sources: [hvr-ghc]}}
-  - env: BUILD=cabal GHCVER=8.0.2 CABALVER=1.24 GHCOPTS="" JOPTS="-j2"
+  include:
+  # We grab the appropriate GHC and cabal-install versions from hvr's PPA. See:
+  # https://github.com/hvr/multi-ghc-travis
+  - env: BUILD=cabal GHCVER=7.8.4 CABALVER=1.18
+    compiler: ": #GHC 7.8.4"
+    addons: {apt: {packages: [cabal-install-1.18,ghc-7.8.4,happy-1.19.5], sources: [hvr-ghc]}}
+  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.24
+    compiler: ": #GHC 7.10.3"
+    addons: {apt: {packages: [cabal-install-1.24,ghc-7.10.3,happy-1.19.5], sources: [hvr-ghc]}}
+
+  - env: BUILD=cabal GHCVER=8.0.2 CABALVER=1.24
     compiler: ": #GHC 8.0.2"
-    addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.1,happy-1.19.5], sources: [hvr-ghc]}}
+    addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.2,happy-1.19.5], sources: [hvr-ghc]}}
+
+  # Build with the newest GHC and cabal-install. This is an accepted failure,
+  # see below.
+  # - env: BUILD=cabal GHCVER=head  CABALVER=head
+  #   compiler: ": #GHC HEAD"
+  #   addons: {apt: {packages: [cabal-install-head,ghc-head,happy-1.19.5], sources: [hvr-ghc]}}
+
+  # The Stack builds. We can pass in arbitrary Stack arguments via the ARGS
+  # variable, such as using --stack-yaml to point to a different file.
+  - env: BUILD=stack ARGS="--resolver lts-8"
+    compiler: ": #stack 8.0.2"
+    addons: {apt: {packages: [ghc-8.0.2], sources: [hvr-ghc]}}
+
+  # Nightly builds are allowed to fail
+  - env: BUILD=stack ARGS="--resolver nightly"
+    compiler: ": #stack nightly"
+    addons: {apt: {packages: [libgmp-dev]}}
+
+  # - env: BUILD=stack ARGS="--resolver lts-7"
+  # - compiler: ": #stack 8.0.1 osx"
+  # - os: osx
+
+  # - env: BUILD=stack ARGS="--resolver nightly"
+  #   compiler: ": #stack nightly osx"
+  #   os: osx
+
+  allow_failures:
+  - env: BUILD=cabal GHCVER=head  CABALVER=head
+  - env: BUILD=stack ARGS="--resolver nightly"
+
+  fast_finish: true
 
 before_install:
 # Using compiler above sets CC to an invalid value, so unset it
