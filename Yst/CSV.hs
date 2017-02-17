@@ -25,9 +25,16 @@ import Text.CSV
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
 -- So we use System.IO.UTF8 only if we have an earlier version
 #if MIN_VERSION_base(4,2,0)
+#if !(MIN_VERSION_base(4,6,0))
 import Prelude hiding (catch)
+#endif
 #else
-import Prelude hiding (readFile, catch)
+import Prelude hiding (
+  readFile
+#if !(MIN_VERSION_base(4,6,0))
+, catch
+#endif
+)
 import System.IO.UTF8
 #endif
 import Control.Exception (catch, SomeException)

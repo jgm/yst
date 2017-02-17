@@ -85,10 +85,6 @@ renderNavNode targeturl (NavPage tit pageurl) =
 renderNavNode targeturl (NavMenu tit nodes) = li_ [] $
     do a_ [class_ "tree-toggle nav-header"] (toHtml tit)
        ul_ [class_ "nav tree"] (mapM_ (renderNavNode targeturl) nodes)
-    where active = targeturl `isInNavNodes` nodes
-          isInNavNodes u = any (isInNavNode u)
-          isInNavNode u (NavPage _ u') = u == u'
-          isInNavNode u (NavMenu _ ns) = u `isInNavNodes` ns
 
 formatFromExtension :: FilePath -> Format
 formatFromExtension f = case (map toLower $ takeExtension f) of

@@ -38,9 +38,19 @@ import System.Time (ClockTime(..))
 -- So we use System.IO.UTF8 only if we have an earlier version
 #if MIN_VERSION_base(4,2,0)
 import System.IO (hPutStrLn)
+#if !(MIN_VERSION_base(4,6,0))
 import Prelude hiding (catch)
+#endif
 #else
-import Prelude hiding (readFile, putStrLn, print, writeFile, catch)
+import Prelude hiding (
+  readFile
+, putStrLn
+, print
+, writeFile
+#if !(MIN_VERSION_base(4,6,0))
+, catch
+#endif
+)
 import System.IO.UTF8
 #endif
 import System.IO (stderr)
