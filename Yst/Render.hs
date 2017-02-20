@@ -75,16 +75,16 @@ dropCommon xs ys = (xs,ys)
 
 renderNav :: String -> [NavNode] -> String
 renderNav targeturl nodes = unpack $ renderText $
-  ul_ [class_ "nav tree"] $ mapM_ (renderNavNode targeturl) nodes
+  ul_ [class_ "nav navbar-nav"] $ mapM_ (renderNavNode targeturl) nodes
 
 renderNavNode :: String -> NavNode -> Html ()
 renderNavNode targeturl (NavPage tit pageurl) =
-  li_ [class_ "current" | pageurl == targeturl] (a_ [href_ pageurl'] (toHtml tit))
+  li_ [class_ "active" | pageurl == targeturl] (a_ [href_ pageurl'] (toHtml tit))
     where targetdir = takeUrlDir targeturl
           pageurl' = pack $ relUrl targetdir pageurl
 renderNavNode targeturl (NavMenu tit nodes) = li_ [] $
-    do a_ [class_ "tree-toggle nav-header"] (toHtml tit)
-       ul_ [class_ "nav tree"] (mapM_ (renderNavNode targeturl) nodes)
+    do a_ [class_ "dropdown-toggle", data_ "toggle" "dropdown"] (toHtml tit)
+       ul_ [class_ "dropdown-menu"] (mapM_ (renderNavNode targeturl) nodes)
 
 formatFromExtension :: FilePath -> Format
 formatFromExtension f = case (map toLower $ takeExtension f) of
