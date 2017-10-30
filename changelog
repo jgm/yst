@@ -1,3 +1,7 @@
+yst 0.6 (released 29 Oct 2017)
+
+  * Update to work with (and require) pandoc 2.0.
+
 yst 0.5.1.2 (released 19 Sep 2017)
 
   * Update demo style to use Bootstrap's navbar instead of tree

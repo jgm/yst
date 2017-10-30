@@ -29,8 +29,8 @@ import Data.Char
 import Data.List (intercalate)
 import Data.List.Split (wordsBy)
 import Text.StringTemplate
-import Data.Text.Lazy (unpack)
-import Data.Text (pack)
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text as T
 import Data.Maybe (fromMaybe)
 import System.FilePath
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
@@ -42,12 +42,7 @@ import System.IO.UTF8
 #endif
 import Data.Time
 import Control.Monad
-#if MIN_VERSION_pandoc(1,14,0)
 import Text.Pandoc.Error (handleError)
-#else
-handleError :: Pandoc -> Pandoc
-handleError = id
-#endif
 
 -- | @relUrl a b@ returns a URL for @b@ relative to @a@.  So, for
 -- example, @relUrl "a" "a/b.html" = "b.html"@,
@@ -74,14 +69,14 @@ dropCommon (x:xs) (y:ys) | x == y = dropCommon xs ys
 dropCommon xs ys = (xs,ys)
 
 renderNav :: String -> [NavNode] -> String
-renderNav targeturl nodes = unpack $ renderText $
+renderNav targeturl nodes = TL.unpack $ renderText $
   ul_ [class_ "nav navbar-nav"] $ mapM_ (renderNavNode targeturl) nodes
 
 renderNavNode :: String -> NavNode -> Html ()
 renderNavNode targeturl (NavPage tit pageurl) =
   li_ [class_ "active" | pageurl == targeturl] (a_ [href_ pageurl'] (toHtml tit))
     where targetdir = takeUrlDir targeturl
-          pageurl' = pack $ relUrl targetdir pageurl
+          pageurl' = T.pack $ relUrl targetdir pageurl
 renderNavNode targeturl (NavMenu tit nodes) = li_ [] $
     do a_ [class_ "dropdown-toggle", data_ "toggle" "dropdown"] (toHtml tit)
        ul_ [class_ "dropdown-menu"] (mapM_ (renderNavNode targeturl) nodes)
@@ -110,7 +105,7 @@ renderPage site page = do
   gs <- mapM directoryGroupRecursive srcDirs
   let g = foldl1 mergeSTGroups gs
   attrs <- forM (pageData page) $ \(k, v) -> getData site v >>= \n -> return (k,n)
-  todaysDate <- liftM utctDay getCurrentTime
+  todaysDate <- liftM utctDay Data.Time.getCurrentTime
   let root' = case length (filter (=='/') $ pageUrl page) of
                     0  -> []
                     n  -> concat $ replicate n ("../" :: String)
@@ -126,30 +121,33 @@ renderPage site page = do
                     $ templ
   layoutTempl <- getTemplate layout g
   let format = formatFromExtension (stripStExt layout)
-  let contents = converterForFormat format rawContents
+  contents <- converterForFormat format (T.pack rawContents)
   return $ render
          . setManyAttrib attrs
          . setAttribute "sitetitle" (siteTitle site)
          . setAttribute "pagetitle" (pageTitle page)
-         . setAttribute "gendate" todaysDate 
-         . setAttribute "contents" contents
+         . setAttribute "gendate" todaysDate
+         . setAttribute "contents" (T.unpack contents)
          . setAttribute "root" root'
          . setAttribute "nav" menuHtml
          $ layoutTempl
 
-converterForFormat :: Format -> String -> String
-converterForFormat f =
-  let reader = handleError . readMarkdown def{readerSmart = True}
-  in  case f of
-       HtmlFormat          -> writeHtmlString def{ writerHtml5 = True } . reader
-       LaTeXFormat         -> writeLaTeX def . reader
-       PlainFormat         -> id
-       ConTeXtFormat       -> writeConTeXt def . reader
-       ManFormat           -> writeMan def . reader
-       RTFFormat           -> writeRTF def . reader
-       DocBookFormat       -> writeDocbook def . reader
-       TexinfoFormat       -> writeTexinfo def . reader
-       OpenDocumentFormat  -> writeOpenDocument def . reader
+converterForFormat :: Format -> T.Text -> IO T.Text
+converterForFormat PlainFormat s = return s
+converterForFormat f s = handleError =<< runIO (reader s >>= writer)
+  where wopts name = def{ writerExtensions = getDefaultExtensions name }
+        reader = readMarkdown def{ readerExtensions =
+                           getDefaultExtensions "markdown" }
+        writer = case f of
+                   HtmlFormat          -> writeHtml5String (wopts "html5")
+                   LaTeXFormat         -> writeLaTeX (wopts "latex")
+                   ConTeXtFormat       -> writeConTeXt (wopts "context")
+                   ManFormat           -> writeMan (wopts "man")
+                   RTFFormat           -> writeRTF (wopts "rtf")
+                   DocBookFormat       -> writeDocbook5 (wopts "docbook5")
+                   TexinfoFormat       -> writeTexinfo (wopts "texinfo")
+                   OpenDocumentFormat  -> writeOpenDocument (wopts "opendocument")
+                   PlainFormat         -> error "should not happen"
 
 getTemplate :: Stringable a => String -> STGroup a -> IO (StringTemplate a)
 getTemplate templateName templateGroup = do
