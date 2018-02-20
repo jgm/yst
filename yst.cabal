@@ -57,7 +57,7 @@ Executable           yst
                      filepath, containers, directory, time,
                      old-locale, old-time, parsec,
                      lucid >= 2.9 && < 2.10,
-                     pandoc >= 2.0 && < 2.1,
+                     pandoc >= 2.0 && < 2.2,
                      split, HDBC, HDBC-sqlite3
   extensions:        CPP
   if impl(ghc >= 6.12)
