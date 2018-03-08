@@ -69,25 +69,31 @@ dropCommon :: (Eq a) => [a] -> [a] -> ([a],[a])
 dropCommon (x:xs) (y:ys) | x == y = dropCommon xs ys
 dropCommon xs ys = (xs,ys)
 
-renderNav :: String -> [NavNode] -> String
-renderNav targeturl nodes = TL.unpack $ renderText $
-  ul_ [class_ "nav nav-pills nav-stacked"] $
-    mapM_ (renderNavNode targeturl) nodes
+renderNav :: NavStyle -> String -> [NavNode] -> String
+renderNav sty targeturl nodes = TL.unpack $ renderText $
+  ul_ [class_ classes] $ mapM_ (renderNavNode sty targeturl) nodes
+  where classes = case sty of
+                       TopNav -> "nav navbar-nav"
+                       SideNav -> "nav nav-pills nav-stacked"
 
-renderNavNode :: String -> NavNode -> Html ()
-renderNavNode targeturl (NavPage tit pageurl) =
+renderNavNode :: NavStyle -> String -> NavNode -> Html ()
+renderNavNode _ targeturl (NavPage tit pageurl) =
   li_ [class_ "active" | pageurl == targeturl]
    (a_ [href_ pageurl'] (toHtml tit))
     where targetdir = takeUrlDir targeturl
           pageurl' = T.pack $ relUrl targetdir pageurl
-renderNavNode targeturl node@(NavMenu tit nodes) = li_ [] $
+renderNavNode TopNav targeturl (NavMenu tit nodes) = li_ [] $
+    do a_ [class_ "dropdown-toggle", data_ "toggle" "dropdown"] (toHtml tit)
+       ul_ [class_ "dropdown-menu"]
+         (mapM_ (renderNavNode TopNav targeturl) nodes)
+renderNavNode SideNav targeturl node@(NavMenu tit nodes) = li_ [] $
     do a_ [id_ buttonId,
            class_ "submenu collapsed", data_ "toggle" "collapse",
            data_ "target" ("#" <> submenuId)]
            (toHtml tit)
        ul_ [id_ submenuId,
             class_ ("nav collapse" <> if expanded then " in" else "")]
-           (mapM_ (renderNavNode targeturl) nodes)
+           (mapM_ (renderNavNode SideNav targeturl) nodes)
     where submenuId = T.replace " " "_" $ T.pack ("menu-" ++ tit)
           buttonId = T.replace " " "_" $ T.pack ("menu-label-" ++ tit)
           expanded = targeturl `elem` (getUrls node)
@@ -112,7 +118,7 @@ formatFromExtension f = case (map toLower $ takeExtension f) of
 
 renderPage :: Site -> Page -> IO String
 renderPage site page = do
-  let menuHtml = renderNav (pageUrl page) (navigation site)
+  let menuHtml = renderNav (navstyle site) (pageUrl page) (navigation site)
   let layout = fromMaybe (defaultLayout site) $ layoutFile page
   srcDirs <- mapM canonicalizePath $ sourceDir site
   gs <- mapM directoryGroupRecursive srcDirs

@@ -182,6 +182,8 @@ The configuration file specifies the following:
 - `filesdir`: list of directories containing static files (default: `files`)
 - `layout`: the default layout template for the site, relative to
   `sourcedir` (default: `layout.html.st`)
+- `navstyle`: either `top` for a top menu or `side` for a side
+  menu
 
 The directories specified by `sourcedir` and `datadir` are searched in
 order to find source/template or data files, respectively.  This allows

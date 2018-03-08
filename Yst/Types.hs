@@ -45,7 +45,11 @@ data Site = Site {
   , indexFile     :: FilePath
   , pageIndex     :: M.Map String Page
   , navigation    :: [NavNode]
+  , navstyle      :: NavStyle
   } deriving (Show, Read, Eq)
+
+data NavStyle = TopNav | SideNav
+  deriving (Show, Read, Eq)
 
 data Source = TemplateFile FilePath
             | SourceFile FilePath

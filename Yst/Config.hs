@@ -41,6 +41,10 @@ parseConfigFile configfile = do
                     , indexFile     = indexfile
                     , pageIndex     = M.fromList $ map (\pg -> (pageUrl pg, pg)) ind
                     , navigation    = nav
+                    , navstyle      =
+                         case getStrAttrWithDefault "navstyle" "top" xs of
+                              "side"  -> SideNav
+                              _       -> TopNav
                     }
        _       -> errorExit 7 "Configuration file must be a YAML hash." >> return undefined
 
