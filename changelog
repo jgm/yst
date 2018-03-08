@@ -1,3 +1,12 @@
+yst 0.7 (released 07 Mar 2018)
+
+  * Added NavStyle type.
+  * Added navstyle field to Site.
+  * Added navstyle parameter to config.yaml (values `top` or `side`).
+    This controls the CSS used for the menu.  Top is default as
+    before.
+  * Removed old js/nav.js and css/hk-pyg.css from the demo site.
+
 yst 0.6.0.1 (released 20 Feb 2018)
 
   * Update to work with pandoc 2.1.
