@@ -43,6 +43,7 @@ import System.IO.UTF8
 import Data.Time
 import Control.Monad
 import Text.Pandoc.Error (handleError)
+import Data.Monoid
 
 -- | @relUrl a b@ returns a URL for @b@ relative to @a@.  So, for
 -- example, @relUrl "a" "a/b.html" = "b.html"@,
@@ -70,16 +71,28 @@ dropCommon xs ys = (xs,ys)
 
 renderNav :: String -> [NavNode] -> String
 renderNav targeturl nodes = TL.unpack $ renderText $
-  ul_ [class_ "nav navbar-nav"] $ mapM_ (renderNavNode targeturl) nodes
+  ul_ [class_ "nav nav-pills nav-stacked"] $
+    mapM_ (renderNavNode targeturl) nodes
 
 renderNavNode :: String -> NavNode -> Html ()
 renderNavNode targeturl (NavPage tit pageurl) =
-  li_ [class_ "active" | pageurl == targeturl] (a_ [href_ pageurl'] (toHtml tit))
+  li_ [class_ "active" | pageurl == targeturl]
+   (a_ [href_ pageurl'] (toHtml tit))
     where targetdir = takeUrlDir targeturl
           pageurl' = T.pack $ relUrl targetdir pageurl
-renderNavNode targeturl (NavMenu tit nodes) = li_ [] $
-    do a_ [class_ "dropdown-toggle", data_ "toggle" "dropdown"] (toHtml tit)
-       ul_ [class_ "dropdown-menu"] (mapM_ (renderNavNode targeturl) nodes)
+renderNavNode targeturl node@(NavMenu tit nodes) = li_ [] $
+    do a_ [id_ buttonId,
+           class_ "submenu collapsed", data_ "toggle" "collapse",
+           data_ "target" ("#" <> submenuId)]
+           (toHtml tit)
+       ul_ [id_ submenuId,
+            class_ ("nav collapse" <> if expanded then " in" else "")]
+           (mapM_ (renderNavNode targeturl) nodes)
+    where submenuId = T.replace " " "_" $ T.pack ("menu-" ++ tit)
+          buttonId = T.replace " " "_" $ T.pack ("menu-label-" ++ tit)
+          expanded = targeturl `elem` (getUrls node)
+          getUrls (NavPage _ u) = [u]
+          getUrls (NavMenu _ ns) = concatMap getUrls ns
 
 formatFromExtension :: FilePath -> Format
 formatFromExtension f = case (map toLower $ takeExtension f) of
