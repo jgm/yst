@@ -17,7 +17,6 @@
             type="text/javascript"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src="$root$js/nav.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="$root$css/screen.css" />
     <link rel="stylesheet" type="text/css" media="print" href="$root$css/print.css" />
   </head>
