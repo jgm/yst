@@ -1,3 +1,8 @@
+yst 0.7.0.1 (released 27 Feb 2019)
+
+  * Support recent pandoc versions.
+  * Demo - remove HTML calling nav.js.
+
 yst 0.7 (released 07 Mar 2018)
 
   * Added NavStyle type.
