@@ -2,4 +2,15 @@ packages:
 - '.'
 extra-deps:
 - HDBC-sqlite3-2.3.3.1
-resolver: lts-13.5
+- pandoc-2.8
+- pandoc-types-1.20
+- haddock-library-1.8.0
+- doctemplates-0.7.1
+- doclayout-0.2.0.1
+- regex-pcre-builtin-0.95.1.1.8.43
+- regex-base-0.94.0.0
+- texmath-0.12
+- HsYAML-0.2.1.0
+- skylighting-core-0.8.2.3
+- skylighting-0.8.2.3
+resolver: lts-14.14
