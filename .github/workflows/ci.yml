@@ -24,6 +24,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
+          apt-get install libsqlite3-dev
           export PATH=/opt/cabal/${{ matrix.versions.cabal }}/bin:/opt/ghc/${{ matrix.versions.ghc }}/bin:$PATH
           cabal v2-update
           cabal v2-build --dependencies-only --enable-tests --disable-optimization -fexecutable all
