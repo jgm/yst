@@ -1,3 +1,8 @@
+yst 0.7.1 (released 25 Nov 2019)
+
+  * Fixes to work with pandoc 2.8.
+  * Add cabal.project and GitHub actions ci.
+
 yst 0.7.0.1 (released 27 Feb 2019)
 
   * Support recent pandoc versions.
