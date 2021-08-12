@@ -1,7 +1,6 @@
+cabal-version:       2.2
 name:                yst
 version:             0.7.1
-Tested-With:         GHC == 7.8.3
-Cabal-version:       >= 1.8
 build-type:          Simple
 synopsis:            Builds a static website from templates and data in YAML or
                      CSV files.
@@ -15,7 +14,7 @@ description:         `yst` is a tool for generating a static website
                      that separates presentation and data.
 
 category:            Text
-license:             GPL
+license:             GPL-2.0-or-later
 license-file:        LICENSE
 author:              John MacFarlane
 maintainer:          jgm@berkeley.edu
@@ -46,18 +45,37 @@ Source-repository    head
 Executable           yst
   hs-source-dirs:    .
   main-is:           yst.hs
-  other-modules:     Yst.Types, Yst.Yaml, Yst.Util, Yst.Data, Yst.Config,
-                     Yst.Render, Yst.Build, Yst.CSV, Yst.Sqlite3, Paths_yst
-  build-depends:     base >=3 && < 5, unordered-containers,
+  other-modules:     Yst.Types,
+                     Yst.Yaml,
+                     Yst.Util,
+                     Yst.Data,
+                     Yst.Config,
+                     Yst.Render,
+                     Yst.Build,
+                     Yst.CSV,
+                     Yst.Sqlite3,
+                     Paths_yst
+  build-depends:     base >=3 && < 5,
+                     unordered-containers,
                      HStringTemplate >= 0.6.1 && < 0.6.9 || > 0.6.11 && < 0.9,
-                     yaml, csv, aeson >= 0.7 && < 1.5, text,
-                     scientific >= 0.2 && < 0.4,
-                     filepath, containers, directory, time,
-                     old-locale, old-time, parsec,
-                     lucid >= 2.9 && < 2.10,
-                     pandoc >= 2.8 && < 2.9,
-                     split, HDBC, HDBC-sqlite3
-  extensions:        CPP
+                     csv,
+                     aeson >= 1.0,
+                     yaml,
+                     text,
+                     scientific >= 0.2,
+                     filepath,
+                     containers,
+                     directory,
+                     time,
+                     old-locale,
+                     old-time,
+                     parsec,
+                     lucid >= 2.9,
+                     pandoc >= 2.14,
+                     split,
+                     HDBC,
+                     HDBC-sqlite3
+  default-extensions:  CPP
   if impl(ghc >= 6.12)
     ghc-options:     -Wall -threaded -fno-warn-orphans -fno-warn-unused-do-bind
   else

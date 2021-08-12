@@ -23,7 +23,7 @@ import Yst.Types
 import Yst.Util
 import Yst.Data
 import System.Directory
-import Text.Pandoc hiding (Format)
+import Text.Pandoc hiding (Format, getTemplate)
 import Lucid
 import Data.Char
 import Data.List (intercalate)
@@ -42,7 +42,6 @@ import System.IO.UTF8
 #endif
 import Data.Time
 import Control.Monad
-import Text.Pandoc.Error (handleError)
 import Data.Monoid
 
 -- | @relUrl a b@ returns a URL for @b@ relative to @a@.  So, for
