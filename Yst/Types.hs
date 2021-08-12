@@ -30,7 +30,6 @@ import qualified Data.Map as M
 import Data.Scientific (coefficient, base10Exponent)
 import Control.Monad
 #if MIN_VERSION_time(1,5,0)
-import Data.Time.Format ( defaultTimeLocale )
 #else
 import System.Locale ( defaultTimeLocale )
 #endif
