@@ -24,15 +24,18 @@ jobs:
             cabal: '3.2'
     steps:
     - uses: actions/checkout@v2
+    - name: Install recent cabal/ghc
+      uses: actions/setup-haskell@v1.1.3
+      with:
+        ghc-version: ${{ matrix.versions.ghc }}
+        cabal-version: ${{ matrix.versions.cabal }}
     - name: Install dependencies
       run: |
           sudo apt install libsqlite3-dev
-          export PATH=/opt/cabal/${{ matrix.versions.cabal }}/bin:/opt/ghc/${{ matrix.versions.ghc }}/bin:$PATH
           cabal v2-update
           cabal v2-build --dependencies-only --enable-tests --disable-optimization -fexecutable all
     - name: Build and test
       run: |
-          export PATH=/opt/cabal/${{ matrix.versions.cabal }}/bin:/opt/ghc/${{ matrix.versions.ghc }}/bin:$PATH
           cabal v2-build --enable-tests --disable-optimization -fexecutable all
 
   macos:
