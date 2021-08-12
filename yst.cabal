@@ -55,7 +55,7 @@ Executable           yst
                      Yst.CSV,
                      Yst.Sqlite3,
                      Paths_yst
-  build-depends:     base >=3 && < 4.15, -- HStringTemplate won't build w/ 4.15
+  build-depends:     base >=3 && < 4.15,
                      unordered-containers,
                      HStringTemplate >= 0.6.1 && < 0.6.9 || > 0.6.11 && < 0.9,
                      csv,
