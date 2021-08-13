@@ -1,3 +1,7 @@
+yst 0.7.1.2 (released 12 Aug 2021)
+
+  * Use latest HStringTemplate so we can build with GHC 9.
+
 yst 0.7.1.1 (released 12 Aug 2021)
 
   * Fixes to work with pandoc 2.14.1.
