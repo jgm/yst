@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 module Yst.Types
 where
 import Data.Char
-import qualified Data.HashMap.Strict as H
 import Data.Time
+import Data.String (fromString)
 import qualified Data.Text as T
 import Text.StringTemplate
 import Data.Aeson
+import Data.Aeson.KeyMap (KeyMap, foldrWithKey, insert)
 import qualified Data.Map as M
 import Data.Scientific (coefficient, base10Exponent)
 import Control.Monad
@@ -137,11 +138,11 @@ instance FromJSON Node where
     | otherwise             = return $ NString $ show n
   parseJSON _ = return $ NNil
 
-handleMerges :: H.HashMap T.Text Value -> H.HashMap T.Text Value
-handleMerges = H.foldrWithKey go H.empty
-  where go k (Object h) m | isMerge k = H.foldrWithKey go m h
-        go k v m = H.insert k v m
-        isMerge k = k == T.pack "<<"
+handleMerges :: KeyMap Value -> KeyMap Value
+handleMerges = foldrWithKey go mempty
+  where go k (Object h) m | isMerge k = foldrWithKey go m h
+        go k v m = insert k v m
+        isMerge k = k == fromString "<<"
 
 instance ToJSON Node where
   toJSON (NDate s) = toJSON (NString $ formatTime defaultTimeLocale "%x" s)

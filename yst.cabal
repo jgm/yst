@@ -57,10 +57,9 @@ Executable           yst
                      Paths_yst
   autogen-modules:   Paths_yst
   build-depends:     base >=3 && < 5,
-                     unordered-containers,
                      HStringTemplate >= 0.8.8,
                      csv,
-                     aeson >= 1.0,
+                     aeson >= 2.0,
                      yaml,
                      text,
                      scientific >= 0.2,
