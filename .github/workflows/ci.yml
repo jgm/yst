@@ -22,11 +22,10 @@ jobs:
             cabal: '3.6'
     steps:
     - uses: actions/checkout@v2
-    - name: Install recent cabal/ghc
-      uses: actions/setup-haskell@v1.1.3
-      with:
-        ghc-version: ${{ matrix.versions.ghc }}
-        cabal-version: ${{ matrix.versions.cabal }}
+    - name: Install cabal/ghc
+      run: |
+        ghcup install ghc --set ${{ matrix.versions.ghc }}
+        ghcup install cabal --set ${{ matrix.versions.cabal }}
     - name: Install dependencies
       run: |
           sudo apt install libsqlite3-dev
