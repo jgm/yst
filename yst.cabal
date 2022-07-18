@@ -56,7 +56,7 @@ Executable           yst
                      Yst.Sqlite3,
                      Paths_yst
   autogen-modules:   Paths_yst
-  build-depends:     base >=3 && < 5,
+  build-depends:     base >= 4.13 && < 5,
                      HStringTemplate >= 0.8.8,
                      csv,
                      aeson >= 2.0,
