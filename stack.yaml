@@ -6,12 +6,4 @@ flags:
     embed_data_files: true
 extra-deps:
 - HDBC-sqlite3-2.3.3.1
-- pandoc-2.14.1
-- commonmark-0.2.1
-- commonmark-pandoc-0.2.1.1
-- skylighting-core-0.11
-- skylighting-0.11
-- doctemplates-0.10
-- citeproc-0.4.1
-- HStringTemplate-0.8.8
-resolver: lts-18.0
+resolver: lts-19.15
