@@ -1,3 +1,8 @@
+yst 0.7.1.3 (released 16 Jul 2022)
+
+  * Remove support for old versions of time (#54).
+  * Require aeson >= 2 and update code (#55).
+
 yst 0.7.1.2 (released 12 Aug 2021)
 
   * Use latest HStringTemplate so we can build with GHC 9.
