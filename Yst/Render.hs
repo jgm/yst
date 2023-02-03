@@ -162,7 +162,7 @@ converterForFormat f s = handleError =<< runIO (reader s >>= writer)
                    ConTeXtFormat       -> writeConTeXt (wopts "context")
                    ManFormat           -> writeMan (wopts "man")
                    RTFFormat           -> writeRTF (wopts "rtf")
-                   DocBookFormat       -> writeDocbook5 (wopts "docbook5")
+                   DocBookFormat       -> writeDocBook5 (wopts "docbook5")
                    TexinfoFormat       -> writeTexinfo (wopts "texinfo")
                    OpenDocumentFormat  -> writeOpenDocument (wopts "opendocument")
                    PlainFormat         -> error "should not happen"

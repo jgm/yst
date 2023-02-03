@@ -69,7 +69,7 @@ Executable           yst
                      time >= 1.5,
                      parsec,
                      lucid >= 2.9,
-                     pandoc >= 2.14,
+                     pandoc >= 3.0.1,
                      split,
                      HDBC,
                      HDBC-sqlite3
