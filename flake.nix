@@ -39,15 +39,8 @@
             haskellPackages.eventlog2html
             haskellPackages.profiterole
             haskellPackages.profiteur
-            zlib.dev
             git
             bashInteractive
-            epubcheck # for validate-epub
-            nodejs # for validate-epub
-            ripgrep
-            libxml2 # for xmllint
-            jq
-            sqlite.dev
           ];
           inputsFrom = map (__getAttr "env") (__attrValues self.packages.${system});
         };

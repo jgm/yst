@@ -1,1 +1,4 @@
 packages: .
+
+package HDBC-sqlite3
+   flags: +builtin-sqlite3
