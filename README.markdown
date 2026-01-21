@@ -25,11 +25,9 @@ Once you have `cabal`, you can install yst with two commands:
 a special directory:  `~/.cabal/bin` on unix systems.  You will need
 to make sure that directory is in your system path.)
 
-If you get the error "yst-0.2.3 depends on template-haskell-2.4.0.0
-which failed to install," then try the following:
+If you get an error about a missing library sqlite3, try with this:
 
-    cabal install syb-with-class-0.6
-    cabal install yst
+    cabal install yst -fbuiltin-sqlite3
 
 Getting started
 ---------------
